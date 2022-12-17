@@ -1,4 +1,4 @@
-Jogador = {
+TJogador = {
     "nome": str,
     "vitorias": int,  # valor de inicialização: 0
     "derrotas": int,  # valor de inicialização: 0

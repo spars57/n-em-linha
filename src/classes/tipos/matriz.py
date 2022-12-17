@@ -1,1 +1,1 @@
-MatrizDeNumerosInteiros = list[list[int]]
+TMatrizDeNumerosInteiros = list[list[int]]
