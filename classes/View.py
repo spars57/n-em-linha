@@ -13,9 +13,12 @@ class View:
 
     def main(self):
         self.controller.utilitarios.limpar_ecran()
-        print('IJ spars alexis_silvery 16 12 6 4 3')
         self.model.ler_dados_de_um_ficheiro('dados.json')
         while True:
+            print('Comandos Uteis:')
+            print('IJ spars alexis_silvery 32 24 6 4 3')
+            print('cp spars 5 2 D')
+            print('------------------')
             self.controller.imprimir_menu()
             comando: str = input("Comando:")
             # Validar se o comando não vem vazio
@@ -79,7 +82,7 @@ class View:
                 case 'DJ':
                     self.controller.inicializar_instrucao()
                     self.informador.predefinicao('Detalhes do Jogo\n')
-                    self.informador.predefinicao(self.model.definicoes_do_jogo.obter())
+                    self.informador.predefinicao(json.dumps(self.model.definicoes_do_jogo.obter(), indent=2))
                     self.controller.finalizar_instrucao()
                     pass
                 case 'IJ':
@@ -96,7 +99,7 @@ class View:
                         self.informador.sucesso(f'Jogo iniciado entre {parametros[0]} e {parametros[1]}')
                     self.controller.finalizar_instrucao()
                 case 'CP':
-                    # CP spars 1 4
+
                     self.controller.inicializar_instrucao()
                     self.informador.predefinicao('Colocar Peça\n')
                     if len(separar) < 2:
@@ -106,9 +109,9 @@ class View:
                     parametros = separar[1].split(' ')
                     if self.controller.colocar_peca(parametros):
                         self.informador.sucesso('Peca inserida com sucesso.')
-                        self.controller.visualizar_jogo()
+                        if self.controller.validar_vitoria():
+                            self.informador.sucesso('Sequência Conseguida. Jogo Terminado.')
                     self.controller.finalizar_instrucao()
-                    pass
                 case 'G':
                     self.controller.inicializar_instrucao()
                     self.informador.predefinicao('Guardar num ficheiro\n')
@@ -143,9 +146,9 @@ class View:
                     if not self.controller.visualizar_jogo():
                         self.informador.erro('Não existe jogo em curso.')
                     self.controller.finalizar_instrucao()
-                case 'sair':
+                case 'SAIR':
                     exit()
                 case default:
                     self.controller.inicializar_instrucao()
-                    self.informador.erro('Instrução inválida.')
+                    self.informador.erro(f'Instrução "{instrucao}" inválida.')
                     self.controller.finalizar_instrucao()

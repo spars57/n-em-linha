@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="49281fa7-b001-4883-9584-29e075b4ec8a" name="Changes" comment="Backup: Abstração e separação mais aprofundada das classes.">
+      <change afterPath="$PROJECT_DIR$/classes/dados.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/DefinicoesDoJogo.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/DefinicoesDoJogo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Informador.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Informador.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Jogador.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Jogador.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Jogo.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Jogo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/ListaDeJogadores.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/ListaDeJogadores.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/Utilitarios.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Utilitarios.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/View.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/View.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/dados.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/program.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/program.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/tipos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/tipos/definicoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/definicoes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/tipos/jogador.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/jogador.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/tipos/matriz.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/matriz.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectId" id="2IW3tk0DFyWnfhYoTsioWusfBMs" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/brunomoisao/UAL/1 º Ano/1 º Semestre/Algoritmia e Programação/n-em-linha&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/classes" />
+      <recent name="$PROJECT_DIR$/src/bruno/classes" />
+      <recent name="$PROJECT_DIR$/src/data" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="View" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="n-em-linha" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3.10" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/bruno" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/bruno/classes/View.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="49281fa7-b001-4883-9584-29e075b4ec8a" name="Changes" comment="" />
+      <created>1670283730671</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1670283730671</updated>
+    </task>
+    <task id="LOCAL-00001" summary="add some useful files">
+      <created>1670284225822</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1670284225822</updated>
+    </task>
+    <task id="LOCAL-00002" summary="add pdf">
+      <created>1670284524057</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1670284524057</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add logic for player management making it possible to use commands 'EJ', 'RJ', 'LJ': &#10;- Create new Player&#10;- Delete Player&#10;- Edit Player (not used by command but will be useful for editing player stats)&#10;&#10;All of this will be stored in players.json file.">
+      <created>1670360380820</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1670360380820</updated>
+    </task>
+    <task id="LOCAL-00004" summary="create dev branch">
+      <created>1670497604514</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1670497604514</updated>
+    </task>
+    <task id="LOCAL-00005" summary="new file">
+      <created>1670498029649</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1670498029649</updated>
+    </task>
+    <task id="LOCAL-00006" summary="new file">
+      <created>1670498049490</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1670498049490</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Criação dos comandos: IJ, DJ, G, L e V.">
+      <created>1670769674464</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1670769674464</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Backup Save: Melhoramento global do projeto">
+      <created>1671232500465</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1671232500465</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Abstração e separação mais aprofundada das classes.">
+      <created>1671248951608</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1671248951608</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Backup: Abstração e separação mais aprofundada das classes.">
+      <created>1671248968191</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1671248968191</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="add some useful files" />
+    <MESSAGE value="add pdf" />
+    <MESSAGE value="Add logic for player management making it possible to use commands 'EJ', 'RJ', 'LJ': &#10;- Create new Player&#10;- Delete Player&#10;- Edit Player (not used by command but will be useful for editing player stats)&#10;&#10;All of this will be stored in players.json file." />
+    <MESSAGE value="create dev branch" />
+    <MESSAGE value="new file" />
+    <MESSAGE value="Criação dos comandos: IJ, DJ, G, L e V." />
+    <MESSAGE value="Backup Save: Melhoramento global do projeto" />
+    <MESSAGE value="Abstração e separação mais aprofundada das classes." />
+    <MESSAGE value="Backup: Abstração e separação mais aprofundada das classes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Backup: Abstração e separação mais aprofundada das classes." />
+  </component>
+</project>

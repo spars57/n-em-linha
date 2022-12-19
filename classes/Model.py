@@ -50,5 +50,4 @@ class Model:
             ficheiro.close()
             return True
         except FileNotFoundError:
-            print('FileNotFoundError')
             return False

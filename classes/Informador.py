@@ -29,3 +29,7 @@ class Informador:
     def predefinicao(valor: any) -> None:
         """Funciona exatamente como a função print()"""
         print(f'{Fore.WHITE}{valor}{Fore.RESET}')
+
+    @staticmethod
+    def transparente(valor: any) -> None:
+        return None

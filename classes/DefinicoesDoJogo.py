@@ -10,7 +10,7 @@ class DefinicoesDoJogo:
             "comprimento": 0,
             "pecas_especiais": [],
             "em_curso": False,
-            "vez": 0,
+            "vez": 1,
         }
 
     def resetar(self) -> None:
@@ -21,7 +21,7 @@ class DefinicoesDoJogo:
             "comprimento": 0,
             "pecas_especiais": [],
             "em_curso": False,
-            "vez": 0,
+            "vez": 1,
         }
 
     def limpar(self) -> None:
