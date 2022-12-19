@@ -13,6 +13,7 @@ class View:
 
     def main(self):
         self.controller.utilitarios.limpar_ecran()
+        print('IJ spars alexis_silvery 16 12 6 4 3')
         self.model.ler_dados_de_um_ficheiro('dados.json')
         while True:
             self.controller.imprimir_menu()
@@ -22,14 +23,12 @@ class View:
                 self.utilitarios.limpar_ecran()
                 continue
             separar: list[str] = comando.split(None, 1)
-            instrucao: str = separar[0]
+            instrucao: str = separar[0].upper()
             match instrucao:
                 case 'LJ':
                     self.controller.inicializar_instrucao()
                     self.informador.predefinicao('Lista de Jogadores\n')
-                    for jogador in self.model.lista_de_jogadores.obter():
-                        print('Jogador:', jogador.obter())
-                        # self.informador.predefinicao(jogador.obter())
+                    self.controller.mostrar_lista_de_jogadores()
                     self.controller.finalizar_instrucao()
                 case 'RJ':
                     self.controller.inicializar_instrucao()
@@ -97,8 +96,17 @@ class View:
                         self.informador.sucesso(f'Jogo iniciado entre {parametros[0]} e {parametros[1]}')
                     self.controller.finalizar_instrucao()
                 case 'CP':
+                    # CP spars 1 4
                     self.controller.inicializar_instrucao()
                     self.informador.predefinicao('Colocar Peça\n')
+                    if len(separar) < 2:
+                        self.informador.erro('O Comando G necessita de receber parametros.')
+                        self.controller.finalizar_instrucao()
+                        continue
+                    parametros = separar[1].split(' ')
+                    if self.controller.colocar_peca(parametros):
+                        self.informador.sucesso('Peca inserida com sucesso.')
+                        self.controller.visualizar_jogo()
                     self.controller.finalizar_instrucao()
                     pass
                 case 'G':

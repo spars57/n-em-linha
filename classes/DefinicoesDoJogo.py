@@ -13,6 +13,17 @@ class DefinicoesDoJogo:
             "vez": 0,
         }
 
+    def resetar(self) -> None:
+        self.definicoes_do_jogo = {
+            "nomes_dos_jogadores": [],
+            "tamanho_sequencia": 0,
+            "altura": 0,
+            "comprimento": 0,
+            "pecas_especiais": [],
+            "em_curso": False,
+            "vez": 0,
+        }
+
     def limpar(self) -> None:
         self.definicoes_do_jogo = {}
 

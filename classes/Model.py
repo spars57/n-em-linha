@@ -44,6 +44,7 @@ class Model:
                 jogador_transformado.atualizar_numero_de_empates(jogador['empates'])
                 jogador_transformado.atualizar_eliminado(jogador['eliminado'])
                 jogador_transformado.atualizar_em_jogo(jogador['em_jogo'])
+                jogador_transformado.atualizar_pecas_especiais(jogador['pecas_especiais'])
                 self.lista_de_jogadores.adicionar_jogador(jogador_transformado)
             self.definicoes_do_jogo.atualizar(dados['definicoes'])
             ficheiro.close()

@@ -10,8 +10,8 @@ class Jogador:
             "empates": 0,
             "em_jogo": False,
             "eliminado": False,
+            "pecas_especiais": [],
         }
-        pass
 
     def obter_nome(self) -> str:
         return self.dados['nome']
@@ -30,6 +30,9 @@ class Jogador:
 
     def obter_eliminado(self) -> bool:
         return self.dados['eliminado']
+
+    def obter_pecas_especiais(self) -> list[int]:
+        return self.dados['pecas_especiais']
 
     def obter(self) -> TJogador:
         return self.dados
@@ -51,6 +54,9 @@ class Jogador:
 
     def atualizar_eliminado(self, valor: bool) -> None:
         self.dados['eliminado'] = valor
+
+    def atualizar_pecas_especiais(self, valor: list[int]) -> None:
+        self.dados['pecas_especiais'] = valor
 
     def atualizar(self, jogador: TJogador) -> None:
         self.dados = jogador

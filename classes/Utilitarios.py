@@ -21,9 +21,9 @@ class Utilitarios:
             os.system('clear')
 
     @staticmethod
-    def verificar_se_e_possivel_converter_para_inteiro(string: str) -> bool:
+    def verificar_se_e_possivel_converter_para_inteiro(value: any) -> bool:
         try:
-            int(string)
+            int(value)
             return True
         except ValueError:
             return False

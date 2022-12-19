@@ -13,8 +13,8 @@ class ListaDeJogadores:
         self.lista_de_jogadores.append(jogador)
 
     def remover_jogador_pelo_nome(self, nome_jogador: str) -> None:
-        self.lista_de_jogadores = [jogador for jogador in self.lista_de_jogadores if
-                                   jogador.obter_nome() != nome_jogador]
+        self.atualizar([jogador for jogador in self.lista_de_jogadores if
+                        jogador.obter_nome() != nome_jogador])
 
     def eliminar_jogador_pelo_nome(self, nome_jogador: str) -> None:
         for jogador in self.lista_de_jogadores:
