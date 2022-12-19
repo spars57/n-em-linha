@@ -5,23 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="49281fa7-b001-4883-9584-29e075b4ec8a" name="Changes" comment="Backup: Abstração e separação mais aprofundada das classes.">
-      <change afterPath="$PROJECT_DIR$/classes/dados.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/DefinicoesDoJogo.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/DefinicoesDoJogo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/Informador.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Informador.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/Jogador.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Jogador.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/Jogo.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Jogo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/ListaDeJogadores.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/ListaDeJogadores.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/Utilitarios.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Utilitarios.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/View.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/View.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/dados.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/program.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/program.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/tipos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/tipos/definicoes.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/definicoes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/tipos/jogador.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/jogador.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/classes/tipos/matriz.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/tipos/matriz.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Controller.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

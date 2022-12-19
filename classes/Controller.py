@@ -5,6 +5,8 @@ from Informador import *
 from Model import *
 from Utilitarios import *
 
+FRAMES_PER_SECOND = 60
+
 
 class Controller:
     def __init__(self, model: Model):
@@ -28,115 +30,7 @@ class Controller:
         return False
 
     def colocar_peca(self, parametros: list[any]) -> bool:
-
-        # Validar se os parametros tem o comprimento minimo
-        if not len(parametros) >= 3:
-            self.informador.erro('O comando CP necessita de pelo menos 3 parametros.')
-            return False
-
-        jogador = self.model.lista_de_jogadores.obter_por_nome(parametros[0])
-
-        # Validar se o nome do jogador é valido e se o jogador existe:
-        if jogador is None:
-            self.informador.erro(f'Jogador "{parametros[0]}" não existe.')
-            return False
-
-        # Validar existe algum jogo em curso:
-        if not self.model.definicoes_do_jogo.obter_em_curso():
-            self.informador.erro(f'Não existe jogo em curso.')
-            return False
-
-        # Validar se o jogador joga:
-        if not jogador.obter_em_jogo():
-            self.informador.erro(f'Jogador "{jogador.obter_nome()}" não participa no jogo em curso.')
-            return False
-
-        # Validar se a posição pode ser convertida para inteiro
-        if not self.utilitarios.verificar_se_e_possivel_converter_para_inteiro(parametros[2]):
-            self.informador.erro(f'O valor <posicao> deve ser inteiro.')
-            return False
-
-        # Validar se o tamanho_peca_que_vai_ser_colocada pode ser convertido para interio
-        if not self.utilitarios.verificar_se_e_possivel_converter_para_inteiro(parametros[1]):
-            self.informador.erro(f'O valor <tamanho_peca> deve ser inteiro.')
-            return False
-
-        coluna = int(parametros[2]) - 1
-        tamanho_peca_que_vai_ser_colocada = int(parametros[1])
-
-        # Validar se a posição está nos limites
-        if not coluna >= 0 and coluna <= self.model.definicoes_do_jogo.obter_comprimento():
-            self.informador.erro(f'Posição irregular.')
-            return False
-
-        # validar se é a vez do jogador
-        nomes_dos_jogadores: list[Jogador] = self.model.lista_de_jogadores.obter_jogadores_em_jogo()
-
-        # Se o nome do jogador corresponder ao nome do jogador 1 a vez atual é 1 senão é 2
-        vez_atual = 1 if jogador.obter_nome() == nomes_dos_jogadores[0].obter_nome() else 2
-
-        # Validar se é a vez do jogador em questão.
-        if not vez_atual == self.model.definicoes_do_jogo.obter_vez():
-            self.informador.erro(f'Não é a vez do jogador "{jogador.obter_nome()}"')
-            return False
-
-        # Caso exista sentido significa que se trata de uma peça especial
-        if len(parametros) >= 4 and tamanho_peca_que_vai_ser_colocada > 1:
-            sentido: str = parametros[3]
-            # Verificar se o parametro sentido é válido:
-            if not sentido.upper() == 'D' and not sentido.upper() == "E":
-                self.informador.erro(f'O valor <sentido> deve "D" ou "E".')
-                return False
-
-            # Validar se o jogador pode utilizar a peça especial
-            if tamanho_peca_que_vai_ser_colocada not in jogador.obter_pecas_especiais():
-                self.informador.erro(
-                    f'Peça com tamanho {tamanho_peca_que_vai_ser_colocada} não disponivel.\nPeças disponiveis: {jogador.obter_pecas_especiais()}')
-                return False
-
-            # Verificar se é possível colocar essa peça nas colunas pretendidas.
-
-            for x in range(coluna,
-                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
-                           1 if sentido == 'D' else -1):
-                if x < 0 or x > self.model.definicoes_do_jogo.obter_comprimento() - 1:
-                    self.informador.erro('O valor ultrapassa os limites laterais do jogo.')
-                    return False
-
-                if not self.colocar_peca_na_matriz(x, 0):
-                    self.informador.erro('Uma das colunas já se encontra completa.')
-                    return False
-
-            # Caso seja possivel introduzimos os valores nas colunas:
-            for x in range(coluna,
-                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
-                           1 if sentido == 'D' else -1):
-                self.colocar_peca_na_matriz(x, vez_atual)
-            # Trocar a vez do jogador.
-            self.model.definicoes_do_jogo.atualizar_vez(1 if vez_atual == 2 else 2)
-            # Remover peça especial ao jogador.
-            removido = False
-            nova_lista_de_pecas = []
-            for peca in jogador.obter_pecas_especiais():
-                if not removido and peca == tamanho_peca_que_vai_ser_colocada:
-                    removido = True
-                else:
-                    nova_lista_de_pecas.append(peca)
-            jogador.atualizar_pecas_especiais(nova_lista_de_pecas)
-            return True
-
-        if tamanho_peca_que_vai_ser_colocada == 1:
-            # Colocar a peca na matriz
-            if self.colocar_peca_na_matriz(coluna, valor=vez_atual):
-                # Trocar a vez do jogador.
-                self.model.definicoes_do_jogo.atualizar_vez(1 if vez_atual == 2 else 2)
-                return True
-            else:
-                self.informador.erro('Não foi possivel colocar a peça porque a coluna encontra-se cheia')
-                return False
-
-        self.informador.erro('Tamanho da peça inválido.')
-        return False
+        pass
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> bool:
         def validacoes() -> bool:
