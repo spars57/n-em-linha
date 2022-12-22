@@ -16,4 +16,15 @@ def retornar_jogador(nome: str, lista_jogadores: list) -> dict:# vai buscar o jo
 
 lista_jogadores.append(registar_jogador('ive'))
 a= retornar_jogador('ive', lista_jogadores)
-print(a)
+print(a) 
+
+lista= []
+
+def eliminar_jogador(nome, lista ):
+    if not  verificar_nome (nome, lista):
+        return False
+    # falta uma função para verificar se o jofador esta a jogar 
+
+    for jogador in lista: 
+    #percorrer a lista 
+        if 
