@@ -27,9 +27,9 @@ class Informador:
 
     @staticmethod
     def predefinicao(valor: any) -> None:
-        """Funciona exatamente como a função print()"""
-        print(f'{Fore.WHITE}{valor}{Fore.RESET}')
+        """Funciona exatamente como a função"""
+        print(f'{Fore.RESET}{valor}{Fore.RESET}')
 
     @staticmethod
-    def transparente(valor: any) -> None:
+    def mudo() -> None:
         return None

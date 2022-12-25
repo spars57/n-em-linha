@@ -4,9 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49281fa7-b001-4883-9584-29e075b4ec8a" name="Changes" comment="Backup: Abstração e separação mais aprofundada das classes.">
+    <list default="true" id="49281fa7-b001-4883-9584-29e075b4ec8a" name="Changes" comment="save">
+      <change afterPath="$PROJECT_DIR$/src/Controller.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilitarios.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/View.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/dados.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Controller.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/DefinicoesDoJogo.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DefinicoesDoJogo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Informador.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Informador.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Jogador.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Jogador.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Jogo.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Jogo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/ListaDeJogadores.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ListaDeJogadores.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/Utilitarios.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/View.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/dados.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/program.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/program.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/tipos/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tipos/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/tipos/definicoes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/tipos/jogador.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/tipos/matriz.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tipos/matriz.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,9 +78,9 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/classes" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/bruno/classes" />
       <recent name="$PROJECT_DIR$/src/data" />
     </key>
@@ -168,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1671248968191</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="save">
+      <created>1671493062056</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1671493062056</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -193,6 +219,7 @@
     <MESSAGE value="Backup Save: Melhoramento global do projeto" />
     <MESSAGE value="Abstração e separação mais aprofundada das classes." />
     <MESSAGE value="Backup: Abstração e separação mais aprofundada das classes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Backup: Abstração e separação mais aprofundada das classes." />
+    <MESSAGE value="save" />
+    <option name="LAST_COMMIT_MESSAGE" value="save" />
   </component>
 </project>
