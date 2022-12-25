@@ -1,0 +1,1 @@
+MatrizDeNumerosInterios = list[list[int]]
