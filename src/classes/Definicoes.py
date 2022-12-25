@@ -1,7 +1,7 @@
 import json
 
 
-class DefinicoesDoJogo:
+class Definicoes:
     def __init__(self):
         self.nomes_dos_jogadores: list = []
         self.tamanho_sequencia: int = 0
@@ -15,7 +15,7 @@ class DefinicoesDoJogo:
         self.em_curso: bool = False
         self.vez: int = 0
 
-    def resetar(self) -> None:
+    def reset(self) -> None:
         self.nomes_dos_jogadores = []
         self.tamanho_sequencia = 0
         self.altura = 0
