@@ -42,6 +42,7 @@ class Controller:
         return False
 
     def colocar_peca(self, parametros: list[any]) -> str:
+
         return 'Tamanho da peça inválido.'
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> str:
