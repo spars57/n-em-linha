@@ -15,7 +15,7 @@ class ListaDeJogadores:
         jogador: Jogador
         self.dados = [jogador for jogador in self.dados if jogador.nome != nome_jogador]
 
-    def obter(self, nome_do_jogador: str) -> Jogador:
+    def obter(self, nome_do_jogador: str) -> Jogador | None:
         try:
             jogador: Jogador
             return [jogador for jogador in self.dados if jogador.nome == nome_do_jogador][0]
