@@ -1,8 +1,11 @@
+import json
 import os
 from json.decoder import JSONDecodeError
+
 from prettytable import PrettyTable
-from classes.ListaDeJogadores import ListaDeJogadores
+
 from classes.Jogador import Jogador
+from classes.ListaDeJogadores import ListaDeJogadores
 
 
 def criar_matriz(altura: int, comprimento: int) -> list[list[int]]:
@@ -127,8 +130,7 @@ def imprimir_ajuda() -> None:
     print("RJ Nome")
     print("EJ Nome")
     print("LJ")
-    print(
-        "IJ Nome Nome Comprimento Altura TamanhoSequência[ TamanhoPeça TamanhoPeça TamanhoPeça ...]")
+    print("IJ Nome Nome Comprimento Altura TamanhoSequência[ TamanhoPeça TamanhoPeça TamanhoPeça ...]")
     print("DJ")
     print("D Nome[ Nome]")
     print("CP Nome TamanhoPeça Posição[ Sentido]")

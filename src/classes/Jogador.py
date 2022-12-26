@@ -8,7 +8,6 @@ class Jogador:
         self.derrotas: int = 0
         self.empates: int = 0
         self.em_jogo: bool = False
-        self.eliminado: bool = False
         self.pecas_especiais: list[int] = []
 
     def json(self) -> str:

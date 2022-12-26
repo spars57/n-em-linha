@@ -1,9 +1,11 @@
-import json
 import time
+from collections import OrderedDict
 
-import utilitarios as utils
+from prettytable import PrettyTable
+
 from classes.Jogador import Jogador
 from classes.Model import Model
+from tools import utilitarios as utils
 
 # FPS = secs / frames
 FPS = 1 / 60
@@ -12,6 +14,14 @@ FPS = 1 / 60
 class Controller:
     def __init__(self, model: Model):
         self.model = model
+
+    def reset(self) -> None:
+        self.model.definicoes.reset()
+        self.model.jogo.reset()
+
+        jogador: Jogador
+        for jogador in self.model.lista.obter_jogadores_em_jogo():
+            jogador.em_jogo = False
 
     def colocar_peca_na_grelha_do_jogo(self, coluna: int, valor: int, grelha: list[list[int]]) -> bool:
         y: int
@@ -32,7 +42,117 @@ class Controller:
         return False
 
     def colocar_peca(self, parametros: list[any]) -> str:
-        return ''
+
+        # Validar se os parametros tem o comprimento minimo
+        if not len(parametros) >= 3:
+            return ''
+
+        # Validar existe algum jogo em curso:
+        if not self.model.definicoes.em_curso:
+            return 'Não existe jogo em curso.'
+
+        jogador: Jogador = self.model.lista.obter(parametros[0])
+
+        # Validar se o nome do jogador é valido e se o jogador existe:
+        if jogador is None:
+            return 'Jogador não registado.'
+
+        # validar se é a vez do jogador
+        nomes_dos_jogadores: list[Jogador] = self.model.lista.obter_jogadores_em_jogo()
+
+        vez_atual: int = 1 if jogador.nome == nomes_dos_jogadores[0].nome else 2
+
+        if self.model.definicoes.vez == 0:
+            self.model.definicoes.vez = vez_atual
+
+        # Validar se é a vez do jogador em questão.
+        if not vez_atual == self.model.definicoes.vez:
+            return 'Não é a vez do jogador.'
+
+        # Validar se o jogador joga:
+        if not jogador.em_jogo:
+            return 'Jogador não participa no jogo em curso.'
+
+        # Validar se o tamanho_peca_que_vai_ser_colocada pode ser convertido para interio
+        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[1]):
+            return 'Tamanho de peça não disponivel.'
+
+        tamanho_peca_que_vai_ser_colocada = int(parametros[1])
+
+        # Validar se a posição pode ser convertida para inteiro
+        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[2]):
+            return 'Posição irregular.'
+
+        coluna = int(parametros[2]) - 1
+
+        # Validar se a posição está nos limites
+        if not coluna >= 0 and coluna <= self.model.definicoes.comprimento:
+            return 'Posição irregular.'
+
+        # Caso exista sentido significa que se trata de uma peça especial
+        if len(parametros) >= 4 and tamanho_peca_que_vai_ser_colocada > 1:
+            sentido: str = parametros[3]
+            # Validar se o jogador pode utilizar a peça especial
+            if tamanho_peca_que_vai_ser_colocada not in jogador.pecas_especiais:
+                return 'Tamanho de peça não disponivel.'
+            # Verificar se o parametro sentido é válido:
+            if not sentido.upper() == 'D' and not sentido.upper() == "E":
+                return 'Posição irregular.'
+
+            # Verificar se é possível colocar essa peça nas colunas pretendidas.
+            x: int
+            for x in range(coluna,
+                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                           1 if sentido == 'D' else -1):
+                if x < 0 or x > self.model.definicoes.comprimento - 1:
+                    return 'Posição irregular.'
+
+                if not self.colocar_peca_na_grelha_do_jogo(x, 0, self.model.jogo.grelha):
+                    return 'Posição irregular.'
+
+            # Caso seja possivel introduzimos os valores nas colunas:
+            x: int
+            for x in range(coluna,
+                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                           1 if sentido == 'D' else -1):
+                self.colocar_peca_na_grelha_do_jogo(x, vez_atual, self.model.jogo.grelha)
+            # Trocar a vez do jogador.
+            self.model.definicoes.vez = (1 if vez_atual == 2 else 2)
+            # Remover peça especial ao jogador.
+            removido = False
+            nova_lista_de_pecas = []
+
+            peca: int
+            for peca in jogador.pecas_especiais:
+                if not removido and peca == tamanho_peca_que_vai_ser_colocada:
+                    removido = True
+                else:
+                    nova_lista_de_pecas.append(peca)
+            jogador.pecas_especiais = nova_lista_de_pecas
+
+            # Aumentar numero de espacos ocupados
+            self.model.definicoes.espacos_ocupados += tamanho_peca_que_vai_ser_colocada
+
+            if self.validar_vitoria():
+                self.reset()
+                return "Sequência conseguida. Jogo terminado."
+            return 'Peça colocada.'
+
+        if tamanho_peca_que_vai_ser_colocada == 1:
+            # Colocar a peca na matriz
+            if self.colocar_peca_na_grelha_do_jogo(coluna, vez_atual, self.model.jogo.grelha):
+                # Trocar a vez do jogador.
+                self.model.definicoes.vez = (1 if vez_atual == 2 else 2)
+                # Aumentar numero de espacos ocupados
+                self.model.definicoes.espacos_ocupados += 1
+                if self.validar_vitoria():
+                    self.reset()
+                    return "Sequência conseguida. Jogo terminado."
+                return 'Peça colocada.'
+            else:
+                return 'Posição irregular.'
+
+        return 'Tamanho da peça inválido.'
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> str:
 
@@ -98,7 +218,6 @@ class Controller:
                 if jogador.em_jogo:
                     return 'Jogador participa no jogo em curso.'
                 else:
-                    jogador.eliminado = True
                     self.model.lista.remover(jogador.nome)
                     return 'Jogador removido com sucesso.'
         return 'Jogador não existente.'
@@ -137,12 +256,6 @@ class Controller:
         # Obter jogadores pelo nome
         jogador1: Jogador = self.model.lista.obter(parametros['nome_1'])
         jogador2: Jogador = self.model.lista.obter(parametros['nome_2'])
-
-        # Validar se os jogadores não foram eliminados
-        if jogador1.eliminado:
-            return 'Jogador não registado.'
-        if jogador2.eliminado:
-            return 'Jogador não registado.'
 
         # Validar se o comprimento e altura são inteiros
         if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros['comprimento']):
@@ -207,13 +320,13 @@ class Controller:
         self.model.definicoes.altura = parametros['altura']
         self.model.definicoes.comprimento = parametros['comprimento']
         self.model.definicoes.pecas_especiais = parametros['tamanho_peca']
-        self.model.definicoes.vez = 1
+        self.model.definicoes.vez = 0
         self.model.definicoes.em_curso = True
         self.model.definicoes.altura_maxima_ocupada = parametros['altura']
         self.model.definicoes.comprimento_maximo_ocupado = 0
 
         # Atualizar numero de espacos livres na matriz
-        self.model.definicoes.espacos_livres = parametros['altura'] * parametros['comprimento']
+        self.model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']
         # Atualizar numero de espacos ocupados na matriz
         self.model.definicoes.espacos_ocupados = 0
         # Atualizar Jogo.
@@ -258,7 +371,8 @@ class Controller:
             x_final = comprimento
             x_passo = 1
 
-            matriz_teste = utils.criar_matriz(altura, comprimento)
+            if self.model.definicoes.espacos_ocupados < self.model.definicoes.tamanho_sequencia:
+                return False
 
             if x_maximo < tamanho_sequencia:
                 return False
@@ -275,19 +389,18 @@ class Controller:
                         continue
 
                     if sequencia_atual == tamanho_sequencia:
+                        utils.limpar_ecran()
                         return True
 
                     sequencia_atual = 1 if jogo_atual[y][x] == 0 else sequencia_atual
                     sequencia_atual = 1 if peca_atual != jogo_atual[y][x] else sequencia_atual + 1
                     peca_atual = jogo_atual[y][x] if peca_atual != jogo_atual[y][x] else peca_atual
-                    matriz_teste[y][x] = 3
 
                     contador_de_ciclos += 1
                     time.sleep(FPS)
                     utils.limpar_ecran()
                     print(
                         f'A verificar vitória na horizontal ({round((contador_de_ciclos / maximo_ciclos) * 100)}%)')
-                    # utils.prettytable_matriz(matriz_teste, altura, comprimento)
             utils.limpar_ecran()
             return False
 
@@ -306,8 +419,6 @@ class Controller:
             x_final = comprimento
             x_passo = 1
 
-            matriz_teste = utils.criar_matriz(altura, comprimento)
-
             if y_minimo > altura - tamanho_sequencia:
                 return False
 
@@ -322,6 +433,7 @@ class Controller:
                         continue
 
                     if sequencia_atual >= tamanho_sequencia:
+                        utils.limpar_ecran()
                         return True
 
                     sequencia_atual = 0 if jogo_atual[y][x] == 0 else sequencia_atual
@@ -329,14 +441,12 @@ class Controller:
                     peca_atual = jogo_atual[y][x] if peca_atual != jogo_atual[y][x] else peca_atual
 
                     contador_de_ciclos += 1
-                    matriz_teste[y][x] = 3
 
                     time.sleep(FPS)
                     utils.limpar_ecran()
                     print(
                         f'A verificar vitória na vertical ({round((contador_de_ciclos / maximo_ciclos) * 100) + 25}%)')
 
-                    # utils.prettytable_matriz(matriz_teste, altura, comprimento)
             utils.limpar_ecran()
             return False
 
@@ -366,8 +476,6 @@ class Controller:
             if x_maximo < tamanho_sequencia:
                 return False
 
-            matriz_teste = utils.criar_matriz(altura, comprimento)
-
             y: int
             for y in range(y_inicial, y_final, y_passo):
                 x: int
@@ -375,6 +483,7 @@ class Controller:
                     incremento: int
                     for incremento in range(incremento_inicial, incremento_final, incremento_passo):
                         if sequencia_atual == tamanho_sequencia:
+                            utils.limpar_ecran()
                             return True
 
                         # Restrições do dominio da função f(x,y,z)
@@ -404,14 +513,12 @@ class Controller:
                         peca_atual = jogo_atual[y - incremento][x + incremento]
 
                         contador_de_ciclos += 1
-                        matriz_teste[y - incremento][x + incremento] = 3
 
                         time.sleep(FPS)
                         utils.limpar_ecran()
                         print(
                             f'A verificar vitória na diagonal ({round((contador_de_ciclos / maximo_ciclos) * 100) + 50}%)')
 
-                        # utils.prettytable_matriz(matriz_teste, altura, comprimento)
             utils.limpar_ecran()
             return False
 
@@ -435,8 +542,6 @@ class Controller:
             incremento_final = altura
             incremento_passo = 1
 
-            matriz_teste = utils.criar_matriz(altura, comprimento)
-
             if y_minimo > altura - tamanho_sequencia:
                 return False
 
@@ -450,6 +555,7 @@ class Controller:
                     incremento: int
                     for incremento in range(incremento_inicial, incremento_final, incremento_passo):
                         if sequencia_atual == tamanho_sequencia:
+                            utils.limpar_ecran()
                             return True
 
                         # Restrições do dominio da função f(x,y,z)
@@ -479,27 +585,60 @@ class Controller:
                         peca_atual = jogo_atual[y - incremento][x - incremento]
 
                         contador_de_ciclos += 1
-                        matriz_teste[y - incremento][x - incremento] = 3
 
                         time.sleep(FPS)
                         utils.limpar_ecran()
                         print(
                             f'A verificar vitória na diagonal ({round((contador_de_ciclos / maximo_ciclos) * 100) + 75}%)')
-                        # utils.prettytable_matriz(matriz_teste, altura, comprimento)
             utils.limpar_ecran()
             return False
 
         return horizontal() or vertical() or diagonal_esquerda_direita() or diagonal_direita_esquerda()
 
     def validar_empate(self) -> bool:
-        return self.model.definicoes.espacos_livres - \
-               self.model.definicoes.espacos_ocupados == 0
+        return self.model.definicoes.espacos_livres_total == 0
 
     def visualizar_jogo(self) -> str:
         if not self.model.definicoes.em_curso:
-            return 'Não existe jogo em curso'
+            return 'Não existe jogo em curso.'
 
-    def mostrar_lista_de_jogadores(self) -> str:
+    def mostrar_lista_de_jogadores(self) -> PrettyTable | str:
         if len(self.model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
-        return json.dumps([jogador.__dict__ for jogador in self.model.lista.dados], indent=2)
+
+        lista = sorted([jogador.__dict__ for jogador in self.model.lista.dados], key=lambda j: j['nome'])
+        cabecalho = [k.replace('_', ' ').title() for k in lista[0].keys()]
+        cabecalho.remove('pecas_especiais'.replace('_', ' ').title())
+        cabecalho.remove('em_jogo'.replace('_', ' ').title())
+        linhas = []
+
+        jogador: Jogador
+        for index in range(len(lista)):
+            linhas.append([])
+            for key in cabecalho:
+                linhas[index].append(lista[index][key.replace(' ', '_').lower()])
+
+        tab = PrettyTable(cabecalho)
+        tab.add_rows(linhas)
+        return tab
+
+    def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:
+        if not self.model.definicoes.em_curso:
+            return 'Não existe jogo em curso.'
+
+        cabecalho: list[str] = ['Chave', 'Valor']
+        tab = PrettyTable(cabecalho)
+
+        definicoes_dict: dict = OrderedDict(sorted(self.model.definicoes.__dict__.items()))
+
+        jogadores_em_jogo = self.model.lista.obter_jogadores_em_jogo()
+
+        key: str
+        for key in definicoes_dict.keys():
+            tab.add_row([key.replace('_', ' ').title(), definicoes_dict[key]])
+
+        jogador: Jogador
+        for jogador in jogadores_em_jogo:
+            tab.add_row([f'Pecas especiais do Jogador {jogador.nome}', jogador.pecas_especiais])
+
+        return tab

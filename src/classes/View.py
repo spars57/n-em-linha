@@ -1,6 +1,6 @@
 from classes.Controller import Controller
 from classes.Model import Model
-import utilitarios as utils
+from tools import utilitarios as utils
 
 
 class View:
@@ -9,6 +9,7 @@ class View:
         self.controller = Controller(self.model)
 
     def main(self):
+        self.model.ler('dados.json')
         utils.limpar_ecran()
         while True:
             utils.imprimir_menu()
@@ -53,7 +54,7 @@ class View:
 
                 case 'DJ':
                     utils.inicializar_instrucao()
-                    print(self.model.definicoes.json())
+                    print(self.controller.mostrar_detalhes_do_jogo())
                     utils.finalizar_instrucao()
                     pass
 

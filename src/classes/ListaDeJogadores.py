@@ -15,12 +15,6 @@ class ListaDeJogadores:
         jogador: Jogador
         self.dados = [jogador for jogador in self.dados if jogador.nome != nome_jogador]
 
-    def eliminar(self, nome_jogador: str) -> None:
-        jogador: Jogador
-        for jogador in self.dados:
-            if jogador.nome == nome_jogador and not jogador.eliminado:
-                jogador.eliminado = True
-
     def obter(self, nome_do_jogador: str) -> Jogador:
         try:
             jogador: Jogador
@@ -30,4 +24,4 @@ class ListaDeJogadores:
 
     def obter_jogadores_em_jogo(self) -> list[Jogador]:
         jogador: Jogador
-        return [jogador for jogador in self.dados if jogador.em_jogo and not jogador.eliminado]
+        return [jogador for jogador in self.dados if jogador.em_jogo]
