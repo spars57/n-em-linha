@@ -2,8 +2,8 @@ import json
 
 
 class Jogador:
-    def __init__(self, nome=""):
-        self.nome: str = nome
+    def __init__(self):
+        self.nome: str = ''
         self.vitorias: int = 0
         self.derrotas: int = 0
         self.empates: int = 0
