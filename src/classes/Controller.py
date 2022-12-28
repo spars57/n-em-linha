@@ -103,15 +103,10 @@ class Controller:
         return 'Desistência com sucesso. Jogo terminado.'
 
     def eliminar_jogador(self, nome_do_jogador: str) -> str:
-        jogador: Jogador
-        for jogador in self.model.lista.dados:
-            if jogador.nome == nome_do_jogador:
-                if jogador.em_jogo:
-                    return 'Jogador participa no jogo em curso.'
-                else:
-                    self.model.lista.remover(jogador.nome)
-                    return 'Jogador removido com sucesso.'
-        return 'Jogador não existente.'
+        # Buscar o jogador
+        # Elimina-lo da lista
+        # Atualizar a lista que está no model.
+        return ''
 
     def iniciar_jogo(self, lista_de_parametros: list[str]) -> str:
         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
@@ -226,16 +221,9 @@ class Controller:
         return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'
 
     def registar_jogador(self, nome_do_jogador) -> str:
-        # Verificar se jogador existe.
-        if self.model.lista.obter(nome_do_jogador) is not None:
-            return 'Jogador existente.'
-        # Criar Jogador.
-        novo_jogador = Jogador()
-        # Alterar o nome do novo jogador para o nome pretendido.
-        novo_jogador.nome = nome_do_jogador
-        # Adicionar jogador à lista de jogadores.
-        self.model.lista.adicionar(novo_jogador)
-        return 'Jogador registado com sucesso.'
+        #Criar Jogador
+        #Adicionar à lista
+        return ''
 
     def validar_vitoria(self) -> bool:
 
