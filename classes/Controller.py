@@ -30,7 +30,41 @@ class Controller:
         return False
 
     def colocar_peca(self, parametros: list[any]) -> bool:
-        pass
+        jogo = self.model.definicoes_do_jogo.obter_em_curso()
+        jogadores = self.model.lista_de_jogadores.obter_jogadores_em_jogo()
+        pecas_especiais = self.model.definicoes_do_jogo.obter_pecas_especiais()
+        coluna = self.model.definicoes_do_jogo.obter_comprimento()
+        linha = self.model.definicoes_do_jogo.obter_altura()
+        def validacoes() -> bool:
+            if not jogo:
+                self.informador.erro('Não existe jogo em curso.')
+                return False
+            for nome in parametros[0]:
+                analisar = self.model.lista_de_jogadores.obter_por_nome(nome)
+                if analisar is None:
+                    self.informador.erro(f'Jogador {nome} não registado.')
+                    return False
+                if not analisar.obter_em_jogo():
+                    self.informador.erro(f'Jogador {nome} não participa em jogo em curso.')
+                    return False
+            for tamanho in pecas_especiais:
+                pass
+            return True    
+
+        if len(parametros) == 2:
+            n_parametros = {'nome': parametros[0], 'tamanho': parametros[1], 'posicao': parametros[2]}
+            jogo = self.model.jogo.obter()
+            for linha in range(self.model.definicoes_do_jogo.obter_altura() - 1, -1, -1):
+                if jogo[linha][coluna] == 0:
+                    jogo[linha][coluna] = n_parametros['tamanho']
+                    self.model.jogo.atualizar(jogo)
+                    vez_atual = self.model.definicoes_do_jogo.obter_vez
+                    if vez_atual == 0:
+                        vez_atual += 1
+                    vez_atual = 1 if vez_atual == 2 else 2
+                    return True
+            return False
+
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> bool:
         def validacoes() -> bool:
