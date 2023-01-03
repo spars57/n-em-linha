@@ -104,9 +104,16 @@ class Controller:
 
     def eliminar_jogador(self, nome_do_jogador: str) -> str:
         # Buscar o jogador
+      
+        jogador = self.model.lista.obter(nome_do_jogador) # Vai buscar o jogador à lista pelo nome.
+        if jogador==None: # Verifica se a variavel esta vazia. 
+            return "Jogador não existe."
+
         # Elimina-lo da lista
+        self.model.lista.remover(nome_do_jogador) 
+        
         # Atualizar a lista que está no model.
-        return ''
+        return 'Fim da função'
 
     def iniciar_jogo(self, lista_de_parametros: list[str]) -> str:
         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
@@ -222,7 +229,15 @@ class Controller:
 
     def registar_jogador(self, nome_do_jogador) -> str:
         #Criar Jogador
+        lista_atual= self.model.lista.dados
+        #print (lista_atual)
+        for jogador in lista_atual:
+            if nome_do_jogador == jogador.nome: 
+                return "Nome já registado."
+        new_player= Jogador(nome_do_jogador)
+        
         #Adicionar à lista
+        self.model.lista.adicionar(new_player)
         return ''
 
     def validar_vitoria(self) -> bool:
