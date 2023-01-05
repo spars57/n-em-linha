@@ -104,14 +104,14 @@ class Controller:
 
     def eliminar_jogador(self, nome_do_jogador: str) -> str:
         # Buscar o jogador
-      
-        jogador = self.model.lista.obter(nome_do_jogador) # Vai buscar o jogador à lista pelo nome.
-        if jogador==None: # Verifica se a variavel esta vazia. 
+
+        jogador = self.model.lista.obter(nome_do_jogador)  # Vai buscar o jogador à lista pelo nome.
+        if jogador is None:  # Verifica se a variavel esta vazia.
             return "Jogador não existe."
 
         # Elimina-lo da lista
-        self.model.lista.remover(nome_do_jogador) 
-        
+        self.model.lista.remover(nome_do_jogador)
+
         # Atualizar a lista que está no model.
         return 'Fim da função'
 
@@ -228,15 +228,15 @@ class Controller:
         return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'
 
     def registar_jogador(self, nome_do_jogador) -> str:
-        #Criar Jogador
-        lista_atual= self.model.lista.dados
-        #print (lista_atual)
+        # Criar Jogador
+        lista_atual = self.model.lista.dados
+        # print (lista_atual)
         for jogador in lista_atual:
-            if nome_do_jogador == jogador.nome: 
+            if nome_do_jogador == jogador.nome:
                 return "Nome já registado."
-        new_player= Jogador(nome_do_jogador)
-        
-        #Adicionar à lista
+        new_player = Jogador(nome_do_jogador)
+
+        # Adicionar à lista
         self.model.lista.adicionar(new_player)
         return ''
 
@@ -390,7 +390,8 @@ class Controller:
                         if x + incremento >= x_maximo:
                             continue
 
-                        # Se o valor já tiver sido processado não será processado novamente, isto é para evitar repetições.
+                        # Se o valor já tiver sido processado não será processado novamente,
+                        # isto é para evitar repetições.
                         if (y - incremento, x + incremento) in processados:
                             continue
                         else:
@@ -500,21 +501,10 @@ class Controller:
         if len(self.model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
 
-        lista = sorted([jogador.__dict__ for jogador in self.model.lista.dados], key=lambda j: j['nome'])
-        cabecalho = [k.replace('_', ' ').title() for k in lista[0].keys()]
-        cabecalho.remove('pecas_especiais'.replace('_', ' ').title())
-        cabecalho.remove('em_jogo'.replace('_', ' ').title())
-        linhas = []
-
-        jogador: Jogador
-        for index in range(len(lista)):
-            linhas.append([])
-            for key in cabecalho:
-                linhas[index].append(lista[index][key.replace(' ', '_').lower()])
-
-        tab = PrettyTable(cabecalho)
-        tab.add_rows(linhas)
-        return tab
+        lista_atual = self.model.lista.dados
+        for jogador in lista_atual:
+            print(jogador.nome)
+        return ''
 
     def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:
         if not self.model.definicoes.em_curso:

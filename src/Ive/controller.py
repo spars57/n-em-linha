@@ -4,6 +4,7 @@ def registar_jogador(nome: str):
  jogador = {'nome':nome, 'vitorias':0, 'derrotas':0,  'empates':0, 'em_jogo':True, 'eliminado':False}
  return jogador
 
+
 def verificar_nome(nome, lista_jogadores): # verificar se o jogador existe 
     for dicionario in lista_jogadores : 
         if dicionario['nome'] == nome: 
