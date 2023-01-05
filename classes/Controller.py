@@ -20,51 +20,42 @@ class Controller:
         self.model.lista_de_jogadores.adicionar_jogador(jogador)
         return True
 
-    def colocar_peca_na_matriz(self, coluna: int, valor: int) -> bool:
-        j = self.model.jogo.obter()
-        for y_ in range(self.model.definicoes_do_jogo.obter_altura() - 1, -1, -1):
-            if j[y_][coluna] == 0:
-                j[y_][coluna] = valor
-                self.model.jogo.atualizar(j)
-                return True
-        return False
-
     def colocar_peca(self, parametros: list[any]) -> bool:
-        jogo = self.model.definicoes_do_jogo.obter_em_curso()
-        jogadores = self.model.lista_de_jogadores.obter_jogadores_em_jogo()
+        jogo_atual = self.model.definicoes_do_jogo.obter_em_curso()
         pecas_especiais = self.model.definicoes_do_jogo.obter_pecas_especiais()
-        coluna = self.model.definicoes_do_jogo.obter_comprimento()
+        n_colunas = self.model.definicoes_do_jogo.obter_comprimento()
         linha = self.model.definicoes_do_jogo.obter_altura()
-        def validacoes() -> bool:
-            if not jogo:
-                self.informador.erro('Não existe jogo em curso.')
+        if not jogo_atual:
+            return 'Não existe jogo em curso.'
+        jogador: jogador = self.model.lista_de_jogadores.obter_por_nome(parametros[0])
+        if jogador is None:
+            return 'Jogador não registado.'
+        if not jogador.obter_jogadores_em_jogo():
+            return 'Jogador não participa em jogo em curso.'
+        for tamanho in pecas_especiais:
+            pass
+
+        jogo = self.model.jogo.obter()
+        n_parametros = {'nome': parametros[0], 'tamanho': parametros[1], 'posicao': parametros[2]}
+        if len(parametros) == 3:
+            if n_parametros['tamanho'] == 1:
+                for linha in range(self.model.definicoes_do_jogo.obter_altura() - 1, -1, -1):
+                    if jogo[linha][n_colunas] == 0:
+                        jogo[linha][n_colunas] = n_parametros['tamanho']
+                        self.model.jogo.atualizar(jogo)
+                        vez_atual = self.model.definicoes_do_jogo.obter_vez
+                        if vez_atual == 0:
+                            vez_atual += 1
+                        vez_atual = 1 if vez_atual == 2 else 2
+                        return True
                 return False
-            for nome in parametros[0]:
-                analisar = self.model.lista_de_jogadores.obter_por_nome(nome)
-                if analisar is None:
-                    self.informador.erro(f'Jogador {nome} não registado.')
-                    return False
-                if not analisar.obter_em_jogo():
-                    self.informador.erro(f'Jogador {nome} não participa em jogo em curso.')
-                    return False
-            for tamanho in pecas_especiais:
-                pass
-            return True    
-
-        if len(parametros) == 2:
-            n_parametros = {'nome': parametros[0], 'tamanho': parametros[1], 'posicao': parametros[2]}
-            jogo = self.model.jogo.obter()
-            for linha in range(self.model.definicoes_do_jogo.obter_altura() - 1, -1, -1):
-                if jogo[linha][coluna] == 0:
-                    jogo[linha][coluna] = n_parametros['tamanho']
-                    self.model.jogo.atualizar(jogo)
-                    vez_atual = self.model.definicoes_do_jogo.obter_vez
-                    if vez_atual == 0:
-                        vez_atual += 1
-                    vez_atual = 1 if vez_atual == 2 else 2
-                    return True
-            return False
-
+            return "Sem o sentido da peça"
+        elif len(parametros) == 4:
+            n_parametros.update({'sentido': parametros[3]})
+            if n_parametros['tamanho'] > 1:
+                if n_parametros['tamanho'] not in pecas_especiais:
+                    return 'Tamanho de peça indisponivel'
+                #if not n_parametros['sentido'].upper() 
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> bool:
         def validacoes() -> bool:
