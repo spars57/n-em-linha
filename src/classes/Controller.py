@@ -500,11 +500,18 @@ class Controller:
     def mostrar_lista_de_jogadores(self) -> PrettyTable | str:
         if len(self.model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
-
+        cabecalho = ["Nome", "Vitorias", "Derrotas", "Empates"]
+        linhas = []
         lista_atual = self.model.lista.dados
         for jogador in lista_atual:
-            print(jogador.nome)
-        return ''
+            linha = [jogador.nome, jogador.vitorias, jogador.derrotas, jogador.empates]
+            linhas.append(linha)
+        tabela = PrettyTable(cabecalho) # PrettyTable é uma classe que cria tabelas
+        tabela.add_rows(linhas)# add_rows add linhas 
+        return tabela 
+        # O que precisas para criar a tabela?
+        # Preciso de linhas, cabeçalho e depois adicionar uma linha 
+        # para cada jogador na lista de jogadores 
 
     def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:
         if not self.model.definicoes.em_curso:
