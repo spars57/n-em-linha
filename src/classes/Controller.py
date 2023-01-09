@@ -43,116 +43,6 @@ class Controller:
 
     def colocar_peca(self, parametros: list[any]) -> str:
 
-        # Validar se os parametros tem o comprimento minimo
-        if not len(parametros) >= 3:
-            return ''
-
-        # Validar existe algum jogo em curso:
-        if not self.model.definicoes.em_curso:
-            return 'Não existe jogo em curso.'
-
-        jogador: Jogador = self.model.lista.obter(parametros[0])
-
-        # Validar se o nome do jogador é valido e se o jogador existe:
-        if jogador is None:
-            return 'Jogador não registado.'
-
-        # validar se é a vez do jogador
-        nomes_dos_jogadores: list[Jogador] = self.model.lista.obter_jogadores_em_jogo()
-
-        vez_atual: int = 1 if jogador.nome == nomes_dos_jogadores[0].nome else 2
-
-        if self.model.definicoes.vez == 0:
-            self.model.definicoes.vez = vez_atual
-
-        # Validar se é a vez do jogador em questão.
-        if not vez_atual == self.model.definicoes.vez:
-            return 'Não é a vez do jogador.'
-
-        # Validar se o jogador joga:
-        if not jogador.em_jogo:
-            return 'Jogador não participa no jogo em curso.'
-
-        # Validar se o tamanho_peca_que_vai_ser_colocada pode ser convertido para interio
-        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[1]):
-            return 'Tamanho de peça não disponivel.'
-
-        tamanho_peca_que_vai_ser_colocada = int(parametros[1])
-
-        # Validar se a posição pode ser convertida para inteiro
-        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[2]):
-            return 'Posição irregular.'
-
-        coluna = int(parametros[2]) - 1
-
-        # Validar se a posição está nos limites
-        if not coluna >= 0 and coluna <= self.model.definicoes.comprimento:
-            return 'Posição irregular.'
-
-        # Caso exista sentido significa que se trata de uma peça especial
-        if len(parametros) >= 4 and tamanho_peca_que_vai_ser_colocada > 1:
-            sentido: str = parametros[3]
-            # Validar se o jogador pode utilizar a peça especial
-            if tamanho_peca_que_vai_ser_colocada not in jogador.pecas_especiais:
-                return 'Tamanho de peça não disponivel.'
-            # Verificar se o parametro sentido é válido:
-            if not sentido.upper() == 'D' and not sentido.upper() == "E":
-                return 'Posição irregular.'
-
-            # Verificar se é possível colocar essa peça nas colunas pretendidas.
-            x: int
-            for x in range(coluna,
-                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
-                           1 if sentido == 'D' else -1):
-                if x < 0 or x > self.model.definicoes.comprimento - 1:
-                    return 'Posição irregular.'
-
-                if not self.colocar_peca_na_grelha_do_jogo(x, 0, self.model.jogo.grelha):
-                    return 'Posição irregular.'
-
-            # Caso seja possivel introduzimos os valores nas colunas:
-            x: int
-            for x in range(coluna,
-                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
-                           1 if sentido == 'D' else -1):
-                self.colocar_peca_na_grelha_do_jogo(x, vez_atual, self.model.jogo.grelha)
-            # Trocar a vez do jogador.
-            self.model.definicoes.vez = (1 if vez_atual == 2 else 2)
-
-            # Remover peça especial ao jogador.
-            removido: bool = False
-            nova_lista_de_pecas: list[int] = []
-
-            peca: int
-            for peca in jogador.pecas_especiais:
-                if not removido and peca == tamanho_peca_que_vai_ser_colocada:
-                    removido = True
-                else:
-                    nova_lista_de_pecas.append(peca)
-            jogador.pecas_especiais = nova_lista_de_pecas
-
-            # Aumentar numero de espacos ocupados
-            self.model.definicoes.espacos_ocupados += tamanho_peca_que_vai_ser_colocada
-
-            if self.validar_vitoria():
-                self.reset()
-                return "Sequência conseguida. Jogo terminado."
-            return 'Peça colocada.'
-
-        if tamanho_peca_que_vai_ser_colocada == 1:
-            # Colocar a peca na matriz
-            if self.colocar_peca_na_grelha_do_jogo(coluna, vez_atual, self.model.jogo.grelha):
-                # Trocar a vez do jogador.
-                self.model.definicoes.vez = (1 if vez_atual == 2 else 2)
-                # Aumentar numero de espacos ocupados
-                self.model.definicoes.espacos_ocupados += 1
-                if self.validar_vitoria():
-                    self.reset()
-                    return "Sequência conseguida. Jogo terminado."
-                return 'Peça colocada.'
-            else:
-                return 'Posição irregular.'
-
         return 'Tamanho da peça inválido.'
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> str:
@@ -213,15 +103,17 @@ class Controller:
         return 'Desistência com sucesso. Jogo terminado.'
 
     def eliminar_jogador(self, nome_do_jogador: str) -> str:
-        jogador: Jogador
-        for jogador in self.model.lista.dados:
-            if jogador.nome == nome_do_jogador:
-                if jogador.em_jogo:
-                    return 'Jogador participa no jogo em curso.'
-                else:
-                    self.model.lista.remover(jogador.nome)
-                    return 'Jogador removido com sucesso.'
-        return 'Jogador não existente.'
+        # Buscar o jogador
+
+        jogador = self.model.lista.obter(nome_do_jogador)  # Vai buscar o jogador à lista pelo nome.
+        if jogador is None:  # Verifica se a variavel esta vazia.
+            return "Jogador não existe."
+
+        # Elimina-lo da lista
+        self.model.lista.remover(nome_do_jogador)
+
+        # Atualizar a lista que está no model.
+        return 'Fim da função'
 
     def iniciar_jogo(self, lista_de_parametros: list[str]) -> str:
         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
@@ -336,16 +228,17 @@ class Controller:
         return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'
 
     def registar_jogador(self, nome_do_jogador) -> str:
-        # Verificar se jogador existe.
-        if self.model.lista.obter(nome_do_jogador) is not None:
-            return 'Jogador existente.'
-        # Criar Jogador.
-        novo_jogador = Jogador()
-        # Alterar o nome do novo jogador para o nome pretendido.
-        novo_jogador.nome = nome_do_jogador
-        # Adicionar jogador à lista de jogadores.
-        self.model.lista.adicionar(novo_jogador)
-        return 'Jogador registado com sucesso.'
+        # Criar Jogador
+        lista_atual = self.model.lista.dados
+        # print (lista_atual)
+        for jogador in lista_atual:
+            if nome_do_jogador == jogador.nome:
+                return "Nome já registado."
+        new_player = Jogador(nome_do_jogador)
+
+        # Adicionar à lista
+        self.model.lista.adicionar(new_player)
+        return ''
 
     def validar_vitoria(self) -> bool:
 
@@ -497,7 +390,8 @@ class Controller:
                         if x + incremento >= x_maximo:
                             continue
 
-                        # Se o valor já tiver sido processado não será processado novamente, isto é para evitar repetições.
+                        # Se o valor já tiver sido processado não será processado novamente,
+                        # isto é para evitar repetições.
                         if (y - incremento, x + incremento) in processados:
                             continue
                         else:
@@ -606,26 +500,18 @@ class Controller:
     def mostrar_lista_de_jogadores(self) -> PrettyTable | str:
         if len(self.model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
-
-        lista: list[dict] = sorted([jogador.__dict__ for jogador in self.model.lista.dados], key=lambda j: j['nome'])
-        cabecalho: list[str] = [k.replace('_', ' ').title() for k in lista[0].keys()]
-        try:
-            cabecalho.remove('pecas_especiais'.replace('_', ' ').title())
-            cabecalho.remove('em_jogo'.replace('_', ' ').title())
-            cabecalho.remove('eliminado'.replace('_', ' ').title())
-        except ValueError:
-            None
+        cabecalho = ["Nome", "Vitorias", "Derrotas", "Empates"]
         linhas = []
-
-        jogador: Jogador
-        for index in range(len(lista)):
-            linhas.append([])
-            for key in cabecalho:
-                linhas[index].append(lista[index][key.replace(' ', '_').lower()])
-
-        tab = PrettyTable(cabecalho)
-        tab.add_rows(linhas)
-        return tab
+        lista_atual = self.model.lista.dados
+        for jogador in lista_atual:
+            linha = [jogador.nome, jogador.vitorias, jogador.derrotas, jogador.empates]
+            linhas.append(linha)
+        tabela = PrettyTable(cabecalho) # PrettyTable é uma classe que cria tabelas
+        tabela.add_rows(linhas)# add_rows add linhas 
+        return tabela 
+        # O que precisas para criar a tabela?
+        # Preciso de linhas, cabeçalho e depois adicionar uma linha 
+        # para cada jogador na lista de jogadores 
 
     def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:
         if not self.model.definicoes.em_curso:
