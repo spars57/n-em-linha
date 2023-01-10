@@ -12,57 +12,165 @@ FPS = 1 / 60
 
 
 class Controller:
-    def __init__(self, model: Model):
-        self.model = model
 
-    def reset(self) -> None:
-        self.model.definicoes.reset()
-        self.model.jogo.reset()
+    @staticmethod
+    def reset(model: Model) -> None:
+        model.definicoes.reset()
+        model.jogo.reset()
 
         jogador: Jogador
-        for jogador in self.model.lista.obter_jogadores_em_jogo():
+        for jogador in model.lista.obter_jogadores_em_jogo():
             jogador.em_jogo = False
 
-    def colocar_peca_na_grelha_do_jogo(self, coluna: int, valor: int, grelha: list[list[int]]) -> bool:
+    @staticmethod
+    def colocar_peca_na_grelha_do_jogo(model: Model, coluna: int, valor: int, grelha: list[list[int]]) -> bool:
         y: int
-        for y in range(self.model.definicoes.altura - 1, -1, -1):
+        for y in range(model.definicoes.altura - 1, -1, -1):
             if grelha[y][coluna] == 0:
                 grelha[y][coluna] = valor
                 # Caso estejamos a usar esta função apenas para validar se existe espaço.
                 if valor == 0:
                     return True
 
-                if y < self.model.definicoes.altura_maxima_ocupada:
-                    self.model.definicoes.altura_maxima_ocupada = y
-                if coluna > self.model.definicoes.comprimento_maximo_ocupado:
-                    self.model.definicoes.comprimento_maximo_ocupado = coluna
+                if y < model.definicoes.altura_maxima_ocupada:
+                    model.definicoes.altura_maxima_ocupada = y
+                if coluna > model.definicoes.comprimento_maximo_ocupado:
+                    model.definicoes.comprimento_maximo_ocupado = coluna
 
-                self.model.jogo.grelha[y][coluna] = grelha[y][coluna]
+                model.jogo.grelha[y][coluna] = grelha[y][coluna]
                 return True
         return False
 
-    def colocar_peca(self, parametros: list[any]) -> str:
+    def colocar_peca(self, model: Model, parametros: list[any]) -> str:
+
+        # Validar se os parametros tem o comprimento minimo
+        if not len(parametros) >= 3:
+            return ''
+
+        # Validar existe algum jogo em curso:
+        if not model.definicoes.em_curso:
+            return 'Não existe jogo em curso.'
+
+        jogador: Jogador = model.lista.obter(parametros[0])
+
+        # Validar se o nome do jogador é valido e se o jogador existe:
+        if jogador is None:
+            return 'Jogador não registado.'
+
+        # validar se é a vez do jogador
+        nomes_dos_jogadores: list[Jogador] = model.lista.obter_jogadores_em_jogo()
+
+        vez_atual: int = 1 if jogador.nome == nomes_dos_jogadores[0].nome else 2
+
+        # Validar se é a vez do jogador em questão.
+        if not vez_atual == model.definicoes.vez:
+            return 'Não é a vez do jogador.'
+
+        # Validar se o jogador joga:
+        if not jogador.em_jogo:
+            return 'Jogador não participa no jogo em curso.'
+
+        # Validar se o tamanho_peca_que_vai_ser_colocada pode ser convertido para interio
+        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[1]):
+            return 'Tamanho de peça não disponivel.'
+
+        tamanho_peca_que_vai_ser_colocada = int(parametros[1])
+
+        # Validar se a posição pode ser convertida para inteiro
+        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[2]):
+            return 'Posição irregular.'
+
+        coluna = int(parametros[2]) - 1
+
+        # Validar se a posição está nos limites
+        if not coluna >= 0 and coluna <= model.definicoes.comprimento:
+            return 'Posição irregular.'
+
+        # Caso exista sentido significa que se trata de uma peça especial
+        if len(parametros) >= 4 and tamanho_peca_que_vai_ser_colocada > 1:
+            sentido: str = parametros[3]
+            # Validar se o jogador pode utilizar a peça especial
+            if tamanho_peca_que_vai_ser_colocada not in jogador.pecas_especiais:
+                return 'Tamanho de peça não disponivel.'
+            # Verificar se o parametro sentido é válido:
+            if not sentido.upper() == 'D' and not sentido.upper() == "E":
+                return 'Posição irregular.'
+
+            # Verificar se é possível colocar essa peça nas colunas pretendidas.
+            x: int
+            for x in range(coluna,
+                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                           1 if sentido == 'D' else -1):
+                if x < 0 or x > model.definicoes.comprimento - 1:
+                    return 'Posição irregular.'
+
+                if not self.colocar_peca_na_grelha_do_jogo(model, x, 0, model.jogo.grelha):
+                    return 'Posição irregular.'
+
+            # Caso seja possivel introduzimos os valores nas colunas:
+            x: int
+            for x in range(coluna,
+                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                           1 if sentido == 'D' else -1):
+                self.colocar_peca_na_grelha_do_jogo(model, x, vez_atual, model.jogo.grelha)
+            # Trocar a vez do jogador.
+            model.definicoes.vez = 2 if model.definicoes.vez == 1 else 1
+
+            # Remover peça especial ao jogador.
+            removido: bool = False
+            nova_lista_de_pecas: list[int] = []
+
+            peca: int
+            for peca in jogador.pecas_especiais:
+                if not removido and peca == tamanho_peca_que_vai_ser_colocada:
+                    removido = True
+                else:
+                    nova_lista_de_pecas.append(peca)
+            jogador.pecas_especiais = nova_lista_de_pecas
+
+            # Aumentar numero de espacos ocupados
+            model.definicoes.espacos_ocupados += tamanho_peca_que_vai_ser_colocada
+
+            if self.validar_vitoria(model):
+                self.reset(model)
+                return "Sequência conseguida. Jogo terminado."
+            return 'Peça colocada.'
+
+        if tamanho_peca_que_vai_ser_colocada == 1:
+            # Colocar a peca na matriz
+            if self.colocar_peca_na_grelha_do_jogo(model, coluna, vez_atual, model.jogo.grelha):
+                # Trocar a vez do jogador.
+                model.definicoes.vez = 2 if model.definicoes.vez == 1 else 1
+                # Aumentar numero de espacos ocupados
+                model.definicoes.espacos_ocupados += 1
+                if self.validar_vitoria(model):
+                    self.reset(model)
+                    return "Sequência conseguida. Jogo terminado."
+                return 'Peça colocada.'
+            else:
+                return 'Posição irregular.'
 
         return 'Tamanho da peça inválido.'
 
-    def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> str:
+    @staticmethod
+    def desistir_do_jogo(model: Model, nomes_dos_jogadores: list[str]) -> str:
 
         nome: str
         for nome in nomes_dos_jogadores:
-            jogador_analisado: Jogador = self.model.lista.obter(nome)
+            jogador_analisado: Jogador = model.lista.obter(nome)
             if jogador_analisado is None:
                 return 'Jogador não registado.'
-            if not self.model.definicoes.em_curso:
+            if not model.definicoes.em_curso:
                 return 'Não existe jogo em curso.'
             if not jogador_analisado.em_jogo:
-                return 'Jogador não participa no jogo em curso'
+                return 'Jogador não participa no jogo em curso.'
 
         # Obter nomes dos jogadores em jogo.
-        nomes_dos_jogadores_em_jogo: list[str] = self.model.definicoes.nomes_dos_jogadores
+        nomes_dos_jogadores_em_jogo: list[str] = model.definicoes.nomes_dos_jogadores
 
         # Obter dicionarios jogadores através do nome
-        jogador1: Jogador = self.model.lista.obter(nomes_dos_jogadores_em_jogo[0])
-        jogador2: Jogador = self.model.lista.obter(nomes_dos_jogadores_em_jogo[1])
+        jogador1: Jogador = model.lista.obter(nomes_dos_jogadores_em_jogo[0])
+        jogador2: Jogador = model.lista.obter(nomes_dos_jogadores_em_jogo[1])
 
         # Lista que armazena o número de desistencias:
         # [0] = jogador1
@@ -72,7 +180,7 @@ class Controller:
         # Contar numero de desistencias para saber ser ambos desistiram
         i: int
         for i in range(len(nomes_dos_jogadores)):
-            jogador: Jogador = self.model.lista.obter(nomes_dos_jogadores[i])
+            jogador: Jogador = model.lista.obter(nomes_dos_jogadores[i])
 
             if jogador.nome == jogador1.nome and jogador1.em_jogo:
                 numero_de_desistencias[0] = True
@@ -99,7 +207,7 @@ class Controller:
         jogador2.em_jogo = False
 
         # Finalizar jogo
-        self.model.definicoes.reset()
+        model.definicoes.reset()
         return 'Desistência com sucesso. Jogo terminado.'
 
     def eliminar_jogador(self, nome_do_jogador: str) -> str:
@@ -115,7 +223,20 @@ class Controller:
         # Atualizar a lista que está no model.
         return 'Fim da função'
 
-    def iniciar_jogo(self, lista_de_parametros: list[str]) -> str:
+    @staticmethod
+    def eliminar_jogador(model: Model, nome_do_jogador: str) -> str:
+        jogador: Jogador
+        for jogador in model.lista.dados:
+            if jogador.nome == nome_do_jogador:
+                if jogador.em_jogo:
+                    return 'Jogador participa no jogo em curso.'
+                else:
+                    model.lista.remover(jogador.nome)
+                    return 'Jogador removido com sucesso.'
+        return 'Jogador não existente.'
+
+    @staticmethod
+    def iniciar_jogo(model: Model, lista_de_parametros: list[str]) -> str:
         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
         if len(lista_de_parametros) < 5:
             return ''
@@ -130,7 +251,7 @@ class Controller:
         }
 
         # Validar se existe um jogo em curso
-        if self.model.definicoes.em_curso:
+        if model.definicoes.em_curso:
             return 'Existe um jogo em curso.'
 
         if parametros['nome_1'] == parametros['nome_2']:
@@ -141,14 +262,14 @@ class Controller:
 
         # Para cada nome vamos validar se o jogador existe e pode jogar
         for nome in nomes_dos_jogadores:
-            if not self.model.lista.obter(nome):
+            if not model.lista.obter(nome):
                 return 'Jogador não registado.'
-            if self.model.lista.obter(nome).em_jogo:
+            if model.lista.obter(nome).em_jogo:
                 return 'Jogador não registado.'
 
         # Obter jogadores pelo nome
-        jogador1: Jogador = self.model.lista.obter(parametros['nome_1'])
-        jogador2: Jogador = self.model.lista.obter(parametros['nome_2'])
+        jogador1: Jogador = model.lista.obter(parametros['nome_1'])
+        jogador2: Jogador = model.lista.obter(parametros['nome_2'])
 
         # Validar se o comprimento e altura são inteiros
         if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros['comprimento']):
@@ -196,6 +317,10 @@ class Controller:
                 # Validar se são numeros inteiros
                 if not utils.verificar_se_e_possivel_converter_para_inteiro(lista_de_parametros[i]):
                     return 'Dimensões de peças especiais invalidas.'
+                if int(lista_de_parametros[i]) > parametros['tamanho_sequencia'] or int(
+                        lista_de_parametros[i]) <= 0:
+                    return 'Dimensões de peças especiais invalidas.'
+
                 # se TODOS os números forem inteiros então TODOS são adicionados às peças especiais.
                 parametros['tamanho_peca'].append(int(lista_de_parametros[i]))
 
@@ -208,46 +333,47 @@ class Controller:
         jogador2.pecas_especiais = parametros['tamanho_peca']
 
         # Atualizar as definicoes do jogo.
-        self.model.definicoes.nomes_dos_jogadores = [parametros['nome_1'], parametros['nome_2']]
-        self.model.definicoes.tamanho_sequencia = parametros['tamanho_sequencia']
-        self.model.definicoes.altura = parametros['altura']
-        self.model.definicoes.comprimento = parametros['comprimento']
-        self.model.definicoes.pecas_especiais = parametros['tamanho_peca']
-        self.model.definicoes.vez = 0
-        self.model.definicoes.em_curso = True
-        self.model.definicoes.altura_maxima_ocupada = parametros['altura']
-        self.model.definicoes.comprimento_maximo_ocupado = 0
+        model.definicoes.nomes_dos_jogadores = [parametros['nome_1'], parametros['nome_2']]
+        model.definicoes.tamanho_sequencia = parametros['tamanho_sequencia']
+        model.definicoes.altura = parametros['altura']
+        model.definicoes.comprimento = parametros['comprimento']
+        model.definicoes.pecas_especiais = parametros['tamanho_peca']
+        model.definicoes.vez = 1
+        model.definicoes.em_curso = True
+        model.definicoes.altura_maxima_ocupada = parametros['altura']
+        model.definicoes.comprimento_maximo_ocupado = 0
 
         # Atualizar numero de espacos livres na matriz
-        self.model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']
+        model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']
         # Atualizar numero de espacos ocupados na matriz
-        self.model.definicoes.espacos_ocupados = 0
+        model.definicoes.espacos_ocupados = 0
         # Atualizar Jogo.
-        self.model.jogo.grelha = utils.criar_matriz(parametros['altura'], parametros['comprimento'])
+        model.jogo.grelha = utils.criar_matriz(parametros['altura'], parametros['comprimento'])
 
         return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'
 
-    def registar_jogador(self, nome_do_jogador) -> str:
-        # Criar Jogador
-        lista_atual = self.model.lista.dados
-        # print (lista_atual)
-        for jogador in lista_atual:
-            if nome_do_jogador == jogador.nome:
-                return "Nome já registado."
-        new_player = Jogador(nome_do_jogador)
+    @staticmethod
+    def registar_jogador(model: Model, nome_do_jogador: str) -> str:
+        # Verificar se jogador existe.
+        if model.lista.obter(nome_do_jogador) is not None:
+            return 'Jogador existente.'
+        # Criar Jogador.
+        novo_jogador = Jogador()
+        # Alterar o nome do novo jogador para o nome pretendido.
+        novo_jogador.nome = nome_do_jogador
+        # Adicionar jogador à lista de jogadores.
+        model.lista.adicionar(novo_jogador)
+        return 'Jogador registado com sucesso.'
 
-        # Adicionar à lista
-        self.model.lista.adicionar(new_player)
-        return ''
+    @staticmethod
+    def validar_vitoria(model: Model) -> bool:
 
-    def validar_vitoria(self) -> bool:
-
-        jogo_atual = self.model.jogo.grelha
-        altura = self.model.definicoes.altura
-        comprimento = self.model.definicoes.comprimento
-        y_minimo = self.model.definicoes.altura_maxima_ocupada
-        x_maximo = self.model.definicoes.comprimento_maximo_ocupado + 1
-        tamanho_sequencia = self.model.definicoes.tamanho_sequencia
+        jogo_atual = model.jogo.grelha
+        altura = model.definicoes.altura
+        comprimento = model.definicoes.comprimento
+        y_minimo = model.definicoes.altura_maxima_ocupada
+        x_maximo = model.definicoes.comprimento_maximo_ocupado + 1
+        tamanho_sequencia = model.definicoes.tamanho_sequencia
         maximo_ciclos = altura * comprimento * 4
 
         def horizontal() -> bool:
@@ -265,7 +391,7 @@ class Controller:
             x_final = comprimento
             x_passo = 1
 
-            if self.model.definicoes.espacos_ocupados < self.model.definicoes.tamanho_sequencia:
+            if model.definicoes.espacos_ocupados < model.definicoes.tamanho_sequencia:
                 return False
 
             if x_maximo < tamanho_sequencia:
@@ -490,39 +616,43 @@ class Controller:
 
         return horizontal() or vertical() or diagonal_esquerda_direita() or diagonal_direita_esquerda()
 
-    def validar_empate(self) -> bool:
-        return self.model.definicoes.espacos_livres_total == 0
+    @staticmethod
+    def validar_empate(model: Model, ) -> bool:
+        return model.definicoes.espacos_livres_total == 0
 
-    def visualizar_jogo(self) -> str:
-        if not self.model.definicoes.em_curso:
+    @staticmethod
+    def visualizar_jogo(model: Model, ) -> str:
+        if not model.definicoes.em_curso:
             return 'Não existe jogo em curso.'
 
-    def mostrar_lista_de_jogadores(self) -> PrettyTable | str:
-        if len(self.model.lista.dados) == 0:
+    @staticmethod
+    def mostrar_lista_de_jogadores(model: Model) -> PrettyTable | str:
+        if len(model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
         cabecalho = ["Nome", "Vitorias", "Derrotas", "Empates"]
         linhas = []
-        lista_atual = self.model.lista.dados
+        lista_atual = model.lista.dados
         for jogador in lista_atual:
             linha = [jogador.nome, jogador.vitorias, jogador.derrotas, jogador.empates]
             linhas.append(linha)
-        tabela = PrettyTable(cabecalho) # PrettyTable é uma classe que cria tabelas
-        tabela.add_rows(linhas)# add_rows add linhas 
-        return tabela 
+        tabela = PrettyTable(cabecalho)  # PrettyTable é uma classe que cria tabelas
+        tabela.add_rows(linhas)  # add_rows add linhas
+        return tabela
         # O que precisas para criar a tabela?
         # Preciso de linhas, cabeçalho e depois adicionar uma linha 
         # para cada jogador na lista de jogadores 
 
-    def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:
-        if not self.model.definicoes.em_curso:
+    @staticmethod
+    def mostrar_detalhes_do_jogo(model: Model, ) -> PrettyTable | str:
+        if not model.definicoes.em_curso:
             return 'Não existe jogo em curso.'
 
         cabecalho: list[str] = ['Chave', 'Valor']
         tab = PrettyTable(cabecalho)
 
-        definicoes_dict: dict = OrderedDict(sorted(self.model.definicoes.__dict__.items()))
+        definicoes_dict: dict = OrderedDict(sorted(model.definicoes.__dict__.items()))
 
-        jogadores_em_jogo = self.model.lista.obter_jogadores_em_jogo()
+        jogadores_em_jogo = model.lista.obter_jogadores_em_jogo()
 
         key: str
         for key in definicoes_dict.keys():

@@ -5,11 +5,10 @@ from tools import utilitarios as utils
 
 class View:
     def __init__(self):
-        self.model = Model()
-        self.controller = Controller(self.model)
+        self.controller = Controller()
 
     def main(self):
-        self.model.ler('dados.json')
+        model = Model()
         utils.limpar_ecran()
         while True:
             utils.imprimir_menu()
@@ -25,7 +24,7 @@ class View:
             match instrucao:
                 case 'LJ':
                     utils.inicializar_instrucao()
-                    print(self.controller.mostrar_lista_de_jogadores())
+                    print(self.controller.mostrar_lista_de_jogadores(model))
                     utils.finalizar_instrucao()
 
                 case 'RJ':
@@ -33,7 +32,7 @@ class View:
                     if len(separar) < 2:
                         continue
                     nome_do_jogador: str = separar[1].split()[0]
-                    print(self.controller.registar_jogador(nome_do_jogador))
+                    print(self.controller.registar_jogador(model, nome_do_jogador))
                     utils.finalizar_instrucao()
 
                 case 'EJ':
@@ -41,20 +40,21 @@ class View:
                     if len(separar) < 2:
                         continue
                     nome_do_jogador: str = separar[1].split()[0]
-                    print(self.controller.eliminar_jogador(nome_do_jogador))
+                    print(self.controller.eliminar_jogador(model, nome_do_jogador))
+                    utils.finalizar_instrucao()
 
                 case 'D':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
                         continue
                     nomes_dos_jogadores: list[str] = separar[1].split()
-                    print(self.controller.desistir_do_jogo(nomes_dos_jogadores))
+                    print(self.controller.desistir_do_jogo(model, nomes_dos_jogadores))
                     utils.finalizar_instrucao()
                     pass
 
                 case 'DJ':
                     utils.inicializar_instrucao()
-                    print(self.controller.mostrar_detalhes_do_jogo())
+                    print(self.controller.mostrar_detalhes_do_jogo(model))
                     utils.finalizar_instrucao()
                     pass
 
@@ -63,7 +63,7 @@ class View:
                     if len(separar) < 2:
                         continue
                     parametros: list[str] = separar[1].split()
-                    print(self.controller.iniciar_jogo(parametros))
+                    print(self.controller.iniciar_jogo(model, parametros))
                     utils.finalizar_instrucao()
 
                 case 'CP':
@@ -72,7 +72,7 @@ class View:
                         utils.finalizar_instrucao()
                         continue
                     parametros = separar[1].split()
-                    print(self.controller.colocar_peca(parametros))
+                    print(self.controller.colocar_peca(model, parametros))
                     utils.finalizar_instrucao()
 
                 case 'G':
@@ -80,7 +80,7 @@ class View:
                     if len(separar) < 2:
                         continue
                     nome_do_ficheiro = separar[1].split()[0]
-                    print(self.model.salvar(nome_do_ficheiro))
+                    print(model.salvar(nome_do_ficheiro))
                     utils.finalizar_instrucao()
 
                 case 'L':
@@ -88,20 +88,20 @@ class View:
                     if len(separar) < 2:
                         continue
                     nome_do_ficheiro = separar[1].split()[0]
-                    print(self.model.ler(nome_do_ficheiro))
+                    print(model.ler(nome_do_ficheiro))
                     utils.finalizar_instrucao()
 
                 case 'V':
                     utils.inicializar_instrucao()
-                    visualizar = self.controller.visualizar_jogo()
+                    visualizar = self.controller.visualizar_jogo(model)
                     if visualizar is not None:
                         print(visualizar)
                         utils.finalizar_instrucao()
                         continue
 
-                    jogo = self.model.jogo.grelha
-                    altura = self.model.definicoes.altura
-                    comprimento = self.model.definicoes.comprimento
+                    jogo = model.jogo.grelha
+                    altura = model.definicoes.altura
+                    comprimento = model.definicoes.comprimento
 
                     utils.prettytable_matriz(jogo, altura, comprimento)
                     utils.finalizar_instrucao()
