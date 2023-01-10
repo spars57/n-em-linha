@@ -55,7 +55,11 @@ class Controller:
             if n_parametros['tamanho'] > 1:
                 if n_parametros['tamanho'] not in pecas_especiais:
                     return 'Tamanho de peça indisponivel'
-                #if not n_parametros['sentido'].upper() 
+                if not n_parametros['sentido'].upper() == 'D' and not n_parametros['sentido'].upper() == 'E':
+                    return 'Posição irregular'
+            if n_parametros['sentido'] == 'D':
+                for x in range(n_colunas, n_colunas + n_parametros['tamanho'], 1):
+                    pass                                        
 
     def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> bool:
         def validacoes() -> bool:
