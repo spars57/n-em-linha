@@ -24,6 +24,7 @@ class Controller:
 
     @staticmethod
     def colocar_peca_na_grelha_do_jogo(model: Model, coluna: int, valor: int, grelha: list[list[int]]) -> bool:
+        # Esta função é auxiliar do comando CP, foi desenvolvida pelo Alexandre.
         y: int
         for y in range(model.definicoes.altura - 1, -1, -1):
             if grelha[y][coluna] == 0:
@@ -58,7 +59,8 @@ class Controller:
             return 'Jogador não registado.'
 
         # validar se é a vez do jogador
-        nomes_dos_jogadores: list[Jogador] = model.lista.obter_jogadores_em_jogo()
+        nomes_dos_jogadores: list[Jogador] = model.lista.obter_jogadores_em_jogo(
+        )
 
         vez_atual: int = 1 if jogador.nome == nomes_dos_jogadores[0].nome else 2
 
@@ -99,7 +101,8 @@ class Controller:
             # Verificar se é possível colocar essa peça nas colunas pretendidas.
             x: int
             for x in range(coluna,
-                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna -
+                           tamanho_peca_que_vai_ser_colocada,
                            1 if sentido == 'D' else -1):
                 if x < 0 or x > model.definicoes.comprimento - 1:
                     return 'Posição irregular.'
@@ -110,9 +113,11 @@ class Controller:
             # Caso seja possivel introduzimos os valores nas colunas:
             x: int
             for x in range(coluna,
-                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna -
+                           tamanho_peca_que_vai_ser_colocada,
                            1 if sentido == 'D' else -1):
-                self.colocar_peca_na_grelha_do_jogo(model, x, vez_atual, model.jogo.grelha)
+                self.colocar_peca_na_grelha_do_jogo(
+                    model, x, vez_atual, model.jogo.grelha)
             # Trocar a vez do jogador.
             model.definicoes.vez = 2 if model.definicoes.vez == 1 else 1
 
@@ -154,7 +159,7 @@ class Controller:
 
     @staticmethod
     def desistir_do_jogo(model: Model, nomes_dos_jogadores: list[str]) -> str:
-
+        # Esta funcionalidade foi feita pelo Bruno.
         nome: str
         for nome in nomes_dos_jogadores:
             jogador_analisado: Jogador = model.lista.obter(nome)
@@ -212,6 +217,7 @@ class Controller:
 
     @staticmethod
     def eliminar_jogador(model: Model, nome_do_jogador: str) -> str:
+        # Esta funcionalidade foi feita pela Ive
         jogador: Jogador
         for jogador in model.lista.dados:
             if jogador.nome == nome_do_jogador:
@@ -224,6 +230,8 @@ class Controller:
 
     @staticmethod
     def iniciar_jogo(model: Model, lista_de_parametros: list[str]) -> str:
+        # Esta funcionalidade foi feita pelo Bruno
+
         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
         if len(lista_de_parametros) < 5:
             return ''
@@ -245,7 +253,8 @@ class Controller:
             return 'Não foi possível iniciar o jogo.'
 
         # Verificar se os jogadores existem e se não estão em jogo.
-        nomes_dos_jogadores: list[str] = [parametros['nome_1'], parametros['nome_2']]
+        nomes_dos_jogadores: list[str] = [
+            parametros['nome_1'], parametros['nome_2']]
 
         # Para cada nome vamos validar se o jogador existe e pode jogar
         for nome in nomes_dos_jogadores:
@@ -320,7 +329,8 @@ class Controller:
         jogador2.pecas_especiais = parametros['tamanho_peca']
 
         # Atualizar as definicoes do jogo.
-        model.definicoes.nomes_dos_jogadores = [parametros['nome_1'], parametros['nome_2']]
+        model.definicoes.nomes_dos_jogadores = [
+            parametros['nome_1'], parametros['nome_2']]
         model.definicoes.tamanho_sequencia = parametros['tamanho_sequencia']
         model.definicoes.altura = parametros['altura']
         model.definicoes.comprimento = parametros['comprimento']
@@ -331,16 +341,20 @@ class Controller:
         model.definicoes.comprimento_maximo_ocupado = 0
 
         # Atualizar numero de espacos livres na matriz
-        model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']
+        model.definicoes.espacos_livres_total = parametros['altura'] * \
+            parametros['comprimento']
         # Atualizar numero de espacos ocupados na matriz
         model.definicoes.espacos_ocupados = 0
         # Atualizar Jogo.
-        model.jogo.grelha = utils.criar_matriz(parametros['altura'], parametros['comprimento'])
+        model.jogo.grelha = utils.criar_matriz(
+            parametros['altura'], parametros['comprimento'])
 
         return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'
 
     @staticmethod
     def registar_jogador(model: Model, nome_do_jogador: str) -> str:
+        # Esta funcionalidade foi feita pela Ive
+
         # Verificar se jogador existe.
         if model.lista.obter(nome_do_jogador) is not None:
             return 'Jogador existente.'
@@ -354,7 +368,7 @@ class Controller:
 
     @staticmethod
     def validar_vitoria(model: Model) -> bool:
-
+        # Esta funcionalidade foi feita pelo Bruno.
         jogo_atual = model.jogo.grelha
         altura = model.definicoes.altura
         comprimento = model.definicoes.comprimento
@@ -508,7 +522,8 @@ class Controller:
                             continue
                         else:
                             # Adicionar valor aos processados
-                            processados.append((y - incremento, x + incremento))
+                            processados.append(
+                                (y - incremento, x + incremento))
 
                         if peca_atual == 0:
                             sequencia_atual = 0
@@ -580,7 +595,8 @@ class Controller:
                             continue
                         else:
                             # Adicionar valor aos processados
-                            processados.append((y - incremento, x - incremento))
+                            processados.append(
+                                (y - incremento, x - incremento))
 
                         if peca_atual == 0:
                             sequencia_atual = 0
@@ -612,30 +628,47 @@ class Controller:
             return 'Não existe jogo em curso.'
 
     @staticmethod
-    def mostrar_lista_de_jogadores(model: Model, ) -> PrettyTable | str:
+    def mostrar_lista_de_jogadores(model: Model) -> PrettyTable | str:
+        # Esta funcionalidade foi feita pela Ive.
         if len(model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
+        cabecalho = ["Nome", "Vitorias", "Derrotas", "Empates"]
+        linhas = []
+        lista_atual = model.lista.dados
+        for jogador in lista_atual:
+            linha = [jogador.nome, jogador.vitorias,
+                     jogador.derrotas, jogador.empates]
+            linhas.append(linha)
+        # PrettyTable é uma classe que cria tabelas
+        tabela = PrettyTable(cabecalho)
+        tabela.add_rows(linhas)  # add_rows add linhas
+        return tabela
 
-        lista: list[dict] = sorted([jogador.__dict__ for jogador in model.lista.dados], key=lambda j: j['nome'])
-        cabecalho: list[str] = [k.replace('_', ' ').title() for k in lista[0].keys()]
-        linhas: list[list[str]] = []
+        # Este código foi desenvolvido em fase de testes, ficou aqui por precaução.
+        #
+        # if len(model.lista.dados) == 0:
+        #     return 'Não existem jogadores registados.'
 
-        try:
-            cabecalho.remove('pecas_especiais'.replace('_', ' ').title())
-            cabecalho.remove('em_jogo'.replace('_', ' ').title())
-            cabecalho.remove('eliminado'.replace('_', ' ').title())
-        except ValueError:
-            pass
+        # lista: list[dict] = sorted([jogador.__dict__ for jogador in model.lista.dados], key=lambda j: j['nome'])
+        # cabecalho: list[str] = [k.replace('_', ' ').title() for k in lista[0].keys()]
+        # linhas: list[list[str]] = []
 
-        jogador: Jogador
-        for index in range(len(lista)):
-            linhas.append([])
-            for key in cabecalho:
-                linhas[index].append(lista[index][key.replace(' ', '_').lower()])
+        # try:
+        #     cabecalho.remove('pecas_especiais'.replace('_', ' ').title())
+        #     cabecalho.remove('em_jogo'.replace('_', ' ').title())
+        #     cabecalho.remove('eliminado'.replace('_', ' ').title())
+        # except ValueError:
+        #     pass
 
-        tab = PrettyTable(cabecalho)
-        tab.add_rows(linhas)
-        return tab
+        # jogador: Jogador
+        # for index in range(len(lista)):
+        #     linhas.append([])
+        #     for key in cabecalho:
+        #         linhas[index].append(lista[index][key.replace(' ', '_').lower()])
+
+        # tab = PrettyTable(cabecalho)
+        # tab.add_rows(linhas)
+        # return tab
 
     @staticmethod
     def mostrar_detalhes_do_jogo(model: Model, ) -> PrettyTable | str:
@@ -645,7 +678,8 @@ class Controller:
         cabecalho: list[str] = ['Chave', 'Valor']
         tab = PrettyTable(cabecalho)
 
-        definicoes_dict: dict = OrderedDict(sorted(model.definicoes.__dict__.items()))
+        definicoes_dict: dict = OrderedDict(
+            sorted(model.definicoes.__dict__.items()))
 
         jogadores_em_jogo = model.lista.obter_jogadores_em_jogo()
 
@@ -655,6 +689,7 @@ class Controller:
 
         jogador: Jogador
         for jogador in jogadores_em_jogo:
-            tab.add_row([f'Pecas especiais do Jogador {jogador.nome}', jogador.pecas_especiais])
+            tab.add_row(
+                [f'Pecas especiais do Jogador {jogador.nome}', jogador.pecas_especiais])
 
         return tab

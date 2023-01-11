@@ -1,0 +1,1315 @@
+Index: src/classes/View.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from classes.Controller import Controller\nfrom classes.Model import Model\nfrom tools import utilitarios as utils\n\n\nclass View:\n    def __init__(self):\n        self.model = Model()\n        self.controller = Controller(self.model)\n\n    def main(self):\n        self.model.ler('dados.json')\n        utils.limpar_ecran()\n        while True:\n            utils.imprimir_menu()\n            comando: str = input(\"Comando:\")\n            # Validar se o comando não vem vazio\n            if len(comando) == 0:\n                utils.limpar_ecran()\n                continue\n\n            separar: list[str] = comando.split(None, 1)\n            instrucao: str = separar[0].upper()\n\n            match instrucao:\n                case 'LJ':\n                    utils.inicializar_instrucao()\n                    print(self.controller.mostrar_lista_de_jogadores())\n                    utils.finalizar_instrucao()\n\n                case 'RJ':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        continue\n                    nome_do_jogador: str = separar[1].split()[0]\n                    print(self.controller.registar_jogador(nome_do_jogador))\n                    utils.finalizar_instrucao()\n\n                case 'EJ':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        continue\n                    nome_do_jogador: str = separar[1].split()[0]\n                    print(self.controller.eliminar_jogador(nome_do_jogador))\n\n                case 'D':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        continue\n                    nomes_dos_jogadores: list[str] = separar[1].split()\n                    print(self.controller.desistir_do_jogo(nomes_dos_jogadores))\n                    utils.finalizar_instrucao()\n                    pass\n\n                case 'DJ':\n                    utils.inicializar_instrucao()\n                    print(self.controller.mostrar_detalhes_do_jogo())\n                    utils.finalizar_instrucao()\n                    pass\n\n                case 'IJ':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        continue\n                    parametros: list[str] = separar[1].split()\n                    print(self.controller.iniciar_jogo(parametros))\n                    utils.finalizar_instrucao()\n\n                case 'CP':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        utils.finalizar_instrucao()\n                        continue\n                    parametros = separar[1].split()\n                    print(self.controller.colocar_peca(parametros))\n                    utils.finalizar_instrucao()\n\n                case 'G':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        continue\n                    nome_do_ficheiro = separar[1].split()[0]\n                    print(self.model.salvar(nome_do_ficheiro))\n                    utils.finalizar_instrucao()\n\n                case 'L':\n                    utils.inicializar_instrucao()\n                    if len(separar) < 2:\n                        continue\n                    nome_do_ficheiro = separar[1].split()[0]\n                    print(self.model.ler(nome_do_ficheiro))\n                    utils.finalizar_instrucao()\n\n                case 'V':\n                    utils.inicializar_instrucao()\n                    visualizar = self.controller.visualizar_jogo()\n                    if visualizar is not None:\n                        print(visualizar)\n                        utils.finalizar_instrucao()\n                        continue\n\n                    jogo = self.model.jogo.grelha\n                    altura = self.model.definicoes.altura\n                    comprimento = self.model.definicoes.comprimento\n\n                    utils.prettytable_matriz(jogo, altura, comprimento)\n                    utils.finalizar_instrucao()\n\n                case 'AJUDA':\n                    utils.inicializar_instrucao()\n                    utils.imprimir_ajuda()\n                    utils.finalizar_instrucao()\n\n                case 'SAIR':\n                    exit()\n\n                case _:\n                    utils.inicializar_instrucao()\n                    print(f'Instrução inválida.')\n                    utils.finalizar_instrucao()\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/classes/View.py b/src/classes/View.py
+--- a/src/classes/View.py	(revision d05f5e2a1fd118539032db7a15d156f4f6241416)
++++ b/src/classes/View.py	(date 1672946212573)
+@@ -5,11 +5,10 @@
+ 
+ class View:
+     def __init__(self):
+-        self.model = Model()
+-        self.controller = Controller(self.model)
++        self.controller = Controller()
+ 
+     def main(self):
+-        self.model.ler('dados.json')
++        model = Model()
+         utils.limpar_ecran()
+         while True:
+             utils.imprimir_menu()
+@@ -25,7 +24,7 @@
+             match instrucao:
+                 case 'LJ':
+                     utils.inicializar_instrucao()
+-                    print(self.controller.mostrar_lista_de_jogadores())
++                    print(self.controller.mostrar_lista_de_jogadores(model))
+                     utils.finalizar_instrucao()
+ 
+                 case 'RJ':
+@@ -33,7 +32,7 @@
+                     if len(separar) < 2:
+                         continue
+                     nome_do_jogador: str = separar[1].split()[0]
+-                    print(self.controller.registar_jogador(nome_do_jogador))
++                    print(self.controller.registar_jogador(model, nome_do_jogador))
+                     utils.finalizar_instrucao()
+ 
+                 case 'EJ':
+@@ -41,20 +40,21 @@
+                     if len(separar) < 2:
+                         continue
+                     nome_do_jogador: str = separar[1].split()[0]
+-                    print(self.controller.eliminar_jogador(nome_do_jogador))
++                    print(self.controller.eliminar_jogador(model, nome_do_jogador))
++                    utils.finalizar_instrucao()
+ 
+                 case 'D':
+                     utils.inicializar_instrucao()
+                     if len(separar) < 2:
+                         continue
+                     nomes_dos_jogadores: list[str] = separar[1].split()
+-                    print(self.controller.desistir_do_jogo(nomes_dos_jogadores))
++                    print(self.controller.desistir_do_jogo(model, nomes_dos_jogadores))
+                     utils.finalizar_instrucao()
+                     pass
+ 
+                 case 'DJ':
+                     utils.inicializar_instrucao()
+-                    print(self.controller.mostrar_detalhes_do_jogo())
++                    print(self.controller.mostrar_detalhes_do_jogo(model))
+                     utils.finalizar_instrucao()
+                     pass
+ 
+@@ -63,7 +63,7 @@
+                     if len(separar) < 2:
+                         continue
+                     parametros: list[str] = separar[1].split()
+-                    print(self.controller.iniciar_jogo(parametros))
++                    print(self.controller.iniciar_jogo(model, parametros))
+                     utils.finalizar_instrucao()
+ 
+                 case 'CP':
+@@ -72,7 +72,7 @@
+                         utils.finalizar_instrucao()
+                         continue
+                     parametros = separar[1].split()
+-                    print(self.controller.colocar_peca(parametros))
++                    print(self.controller.colocar_peca(model, parametros))
+                     utils.finalizar_instrucao()
+ 
+                 case 'G':
+@@ -80,7 +80,7 @@
+                     if len(separar) < 2:
+                         continue
+                     nome_do_ficheiro = separar[1].split()[0]
+-                    print(self.model.salvar(nome_do_ficheiro))
++                    print(model.salvar(nome_do_ficheiro))
+                     utils.finalizar_instrucao()
+ 
+                 case 'L':
+@@ -88,20 +88,20 @@
+                     if len(separar) < 2:
+                         continue
+                     nome_do_ficheiro = separar[1].split()[0]
+-                    print(self.model.ler(nome_do_ficheiro))
++                    print(model.ler(nome_do_ficheiro))
+                     utils.finalizar_instrucao()
+ 
+                 case 'V':
+                     utils.inicializar_instrucao()
+-                    visualizar = self.controller.visualizar_jogo()
++                    visualizar = self.controller.visualizar_jogo(model)
+                     if visualizar is not None:
+                         print(visualizar)
+                         utils.finalizar_instrucao()
+                         continue
+ 
+-                    jogo = self.model.jogo.grelha
+-                    altura = self.model.definicoes.altura
+-                    comprimento = self.model.definicoes.comprimento
++                    jogo = model.jogo.grelha
++                    altura = model.definicoes.altura
++                    comprimento = model.definicoes.comprimento
+ 
+                     utils.prettytable_matriz(jogo, altura, comprimento)
+                     utils.finalizar_instrucao()
+Index: src/classes/Controller.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import time\nfrom collections import OrderedDict\n\nfrom prettytable import PrettyTable\n\nfrom classes.Jogador import Jogador\nfrom classes.Model import Model\nfrom tools import utilitarios as utils\n\n# FPS = secs / frames\nFPS = 1 / 60\n\n\nclass Controller:\n    def __init__(self, model: Model):\n        self.model = model\n\n    def reset(self) -> None:\n        self.model.definicoes.reset()\n        self.model.jogo.reset()\n\n        jogador: Jogador\n        for jogador in self.model.lista.obter_jogadores_em_jogo():\n            jogador.em_jogo = False\n\n    def colocar_peca_na_grelha_do_jogo(self, coluna: int, valor: int, grelha: list[list[int]]) -> bool:\n        y: int\n        for y in range(self.model.definicoes.altura - 1, -1, -1):\n            if grelha[y][coluna] == 0:\n                grelha[y][coluna] = valor\n                # Caso estejamos a usar esta função apenas para validar se existe espaço.\n                if valor == 0:\n                    return True\n\n                if y < self.model.definicoes.altura_maxima_ocupada:\n                    self.model.definicoes.altura_maxima_ocupada = y\n                if coluna > self.model.definicoes.comprimento_maximo_ocupado:\n                    self.model.definicoes.comprimento_maximo_ocupado = coluna\n\n                self.model.jogo.grelha[y][coluna] = grelha[y][coluna]\n                return True\n        return False\n\n    def colocar_peca(self, parametros: list[any]) -> str:\n\n        # Validar se os parametros tem o comprimento minimo\n        if not len(parametros) >= 3:\n            return ''\n\n        # Validar existe algum jogo em curso:\n        if not self.model.definicoes.em_curso:\n            return 'Não existe jogo em curso.'\n\n        jogador: Jogador = self.model.lista.obter(parametros[0])\n\n        # Validar se o nome do jogador é valido e se o jogador existe:\n        if jogador is None:\n            return 'Jogador não registado.'\n\n        # validar se é a vez do jogador\n        nomes_dos_jogadores: list[Jogador] = self.model.lista.obter_jogadores_em_jogo()\n\n        vez_atual: int = 1 if jogador.nome == nomes_dos_jogadores[0].nome else 2\n\n        if self.model.definicoes.vez == 0:\n            self.model.definicoes.vez = vez_atual\n\n        # Validar se é a vez do jogador em questão.\n        if not vez_atual == self.model.definicoes.vez:\n            return 'Não é a vez do jogador.'\n\n        # Validar se o jogador joga:\n        if not jogador.em_jogo:\n            return 'Jogador não participa no jogo em curso.'\n\n        # Validar se o tamanho_peca_que_vai_ser_colocada pode ser convertido para interio\n        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[1]):\n            return 'Tamanho de peça não disponivel.'\n\n        tamanho_peca_que_vai_ser_colocada = int(parametros[1])\n\n        # Validar se a posição pode ser convertida para inteiro\n        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros[2]):\n            return 'Posição irregular.'\n\n        coluna = int(parametros[2]) - 1\n\n        # Validar se a posição está nos limites\n        if not coluna >= 0 and coluna <= self.model.definicoes.comprimento:\n            return 'Posição irregular.'\n\n        # Caso exista sentido significa que se trata de uma peça especial\n        if len(parametros) >= 4 and tamanho_peca_que_vai_ser_colocada > 1:\n            sentido: str = parametros[3]\n            # Validar se o jogador pode utilizar a peça especial\n            if tamanho_peca_que_vai_ser_colocada not in jogador.pecas_especiais:\n                return 'Tamanho de peça não disponivel.'\n            # Verificar se o parametro sentido é válido:\n            if not sentido.upper() == 'D' and not sentido.upper() == \"E\":\n                return 'Posição irregular.'\n\n            # Verificar se é possível colocar essa peça nas colunas pretendidas.\n            x: int\n            for x in range(coluna,\n                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,\n                           1 if sentido == 'D' else -1):\n                if x < 0 or x > self.model.definicoes.comprimento - 1:\n                    return 'Posição irregular.'\n\n                if not self.colocar_peca_na_grelha_do_jogo(x, 0, self.model.jogo.grelha):\n                    return 'Posição irregular.'\n\n            # Caso seja possivel introduzimos os valores nas colunas:\n            x: int\n            for x in range(coluna,\n                           coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,\n                           1 if sentido == 'D' else -1):\n                self.colocar_peca_na_grelha_do_jogo(x, vez_atual, self.model.jogo.grelha)\n            # Trocar a vez do jogador.\n            self.model.definicoes.vez = (1 if vez_atual == 2 else 2)\n\n            # Remover peça especial ao jogador.\n            removido: bool = False\n            nova_lista_de_pecas: list[int] = []\n\n            peca: int\n            for peca in jogador.pecas_especiais:\n                if not removido and peca == tamanho_peca_que_vai_ser_colocada:\n                    removido = True\n                else:\n                    nova_lista_de_pecas.append(peca)\n            jogador.pecas_especiais = nova_lista_de_pecas\n\n            # Aumentar numero de espacos ocupados\n            self.model.definicoes.espacos_ocupados += tamanho_peca_que_vai_ser_colocada\n\n            if self.validar_vitoria():\n                self.reset()\n                return \"Sequência conseguida. Jogo terminado.\"\n            return 'Peça colocada.'\n\n        if tamanho_peca_que_vai_ser_colocada == 1:\n            # Colocar a peca na matriz\n            if self.colocar_peca_na_grelha_do_jogo(coluna, vez_atual, self.model.jogo.grelha):\n                # Trocar a vez do jogador.\n                self.model.definicoes.vez = (1 if vez_atual == 2 else 2)\n                # Aumentar numero de espacos ocupados\n                self.model.definicoes.espacos_ocupados += 1\n                if self.validar_vitoria():\n                    self.reset()\n                    return \"Sequência conseguida. Jogo terminado.\"\n                return 'Peça colocada.'\n            else:\n                return 'Posição irregular.'\n\n        return 'Tamanho da peça inválido.'\n\n    def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> str:\n\n        nome: str\n        for nome in nomes_dos_jogadores:\n            jogador_analisado: Jogador = self.model.lista.obter(nome)\n            if jogador_analisado is None:\n                return 'Jogador não registado.'\n            if not self.model.definicoes.em_curso:\n                return 'Não existe jogo em curso.'\n            if not jogador_analisado.em_jogo:\n                return 'Jogador não participa no jogo em curso'\n\n        # Obter nomes dos jogadores em jogo.\n        nomes_dos_jogadores_em_jogo: list[str] = self.model.definicoes.nomes_dos_jogadores\n\n        # Obter dicionarios jogadores através do nome\n        jogador1: Jogador = self.model.lista.obter(nomes_dos_jogadores_em_jogo[0])\n        jogador2: Jogador = self.model.lista.obter(nomes_dos_jogadores_em_jogo[1])\n\n        # Lista que armazena o número de desistencias:\n        # [0] = jogador1\n        # [1] = jogador2\n        numero_de_desistencias = [False, False]\n\n        # Contar numero de desistencias para saber ser ambos desistiram\n        i: int\n        for i in range(len(nomes_dos_jogadores)):\n            jogador: Jogador = self.model.lista.obter(nomes_dos_jogadores[i])\n\n            if jogador.nome == jogador1.nome and jogador1.em_jogo:\n                numero_de_desistencias[0] = True\n\n            if jogador.nome == jogador2.nome and jogador2.em_jogo:\n                numero_de_desistencias[1] = True\n\n        # Ambos os jogadores desistem\n        if numero_de_desistencias == [True, True]:\n            jogador1.empates += 1\n            jogador2.empates += 1\n\n        # Jogador 2 desiste\n        if numero_de_desistencias == [False, True]:\n            jogador1.vitorias += 1\n            jogador2.derrotas += 1\n        # Jogador 1 desiste\n        if numero_de_desistencias == [True, False]:\n            jogador1.derrotas += 1\n            jogador2.vitorias += 1\n\n        # Atualizar o estado dos jogadores para \"não joga\"\n        jogador1.em_jogo = False\n        jogador2.em_jogo = False\n\n        # Finalizar jogo\n        self.model.definicoes.reset()\n        return 'Desistência com sucesso. Jogo terminado.'\n\n    def eliminar_jogador(self, nome_do_jogador: str) -> str:\n        jogador: Jogador\n        for jogador in self.model.lista.dados:\n            if jogador.nome == nome_do_jogador:\n                if jogador.em_jogo:\n                    return 'Jogador participa no jogo em curso.'\n                else:\n                    self.model.lista.remover(jogador.nome)\n                    return 'Jogador removido com sucesso.'\n        return 'Jogador não existente.'\n\n    def iniciar_jogo(self, lista_de_parametros: list[str]) -> str:\n        # Verificar se foram passados no minimo 6 parametros se não for temos um erro\n        if len(lista_de_parametros) < 5:\n            return ''\n\n        parametros: dict = {\n            \"nome_1\": lista_de_parametros[0],\n            \"nome_2\": lista_de_parametros[1],\n            \"comprimento\": lista_de_parametros[2],\n            \"altura\": lista_de_parametros[3],\n            \"tamanho_sequencia\": lista_de_parametros[4],\n            \"tamanho_peca\": []\n        }\n\n        # Validar se existe um jogo em curso\n        if self.model.definicoes.em_curso:\n            return 'Existe um jogo em curso.'\n\n        if parametros['nome_1'] == parametros['nome_2']:\n            return 'Não foi possível iniciar o jogo.'\n\n        # Verificar se os jogadores existem e se não estão em jogo.\n        nomes_dos_jogadores: list[str] = [parametros['nome_1'], parametros['nome_2']]\n\n        # Para cada nome vamos validar se o jogador existe e pode jogar\n        for nome in nomes_dos_jogadores:\n            if not self.model.lista.obter(nome):\n                return 'Jogador não registado.'\n            if self.model.lista.obter(nome).em_jogo:\n                return 'Jogador não registado.'\n\n        # Obter jogadores pelo nome\n        jogador1: Jogador = self.model.lista.obter(parametros['nome_1'])\n        jogador2: Jogador = self.model.lista.obter(parametros['nome_2'])\n\n        # Validar se o comprimento e altura são inteiros\n        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros['comprimento']):\n            return 'Dimensões de grelha invalidas.'\n        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros['altura']):\n            return 'Dimensões de grelha invalidas.'\n\n        # Converter Altura e Comprimento para Inteiro:\n        parametros['comprimento'] = int(parametros['comprimento'])\n        parametros['altura'] = int(parametros['altura'])\n\n        # Validar se são números positivos\n        if not parametros['altura'] >= 0:\n            return 'Dimensões de grelha invalidas.'\n\n        if not parametros['comprimento'] >= 0:\n            return 'Dimensões de grelha invalidas.'\n\n        # Validar se a altura está dentro dos limites aceites\n        if not parametros['comprimento'] // 2 <= parametros['altura'] <= parametros['comprimento']:\n            return 'Dimensões de grelha invalidas.'\n\n        # Validar se o tamanho sequencia é inteiro.\n        if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros['tamanho_sequencia']):\n            return 'Tamanho de sequência invalido.'\n\n        # Converter tamanho sequencia para inteiro\n        parametros['tamanho_sequencia'] = int(parametros['tamanho_sequencia'])\n\n        # Validar se o tamanho da sequência é válido\n        if not parametros['tamanho_sequencia'] >= 0:\n            return 'Tamanho de sequência invalido.'\n\n        # Validar se o comprimento é maior ou ígual que o tamanho da sequência\n        if not parametros['tamanho_sequencia'] <= parametros['comprimento']:\n            return 'Tamanho de sequência invalido.'\n\n        # Validar se o comprimento é maior ou ígual que o tamanho da sequência\n        if not parametros['tamanho_sequencia'] <= parametros['comprimento']:\n            return 'Tamanho de sequência invalido.'\n\n        # No caso de haverem mais de 6 parametros, os restantes são guardados no tamanho_peca se forem numeros inteiros\n        for i in range(len(lista_de_parametros)):\n            if i >= 5:\n                # Validar se são numeros inteiros\n                if not utils.verificar_se_e_possivel_converter_para_inteiro(lista_de_parametros[i]):\n                    return 'Dimensões de peças especiais invalidas.'\n                # se TODOS os números forem inteiros então TODOS são adicionados às peças especiais.\n                parametros['tamanho_peca'].append(int(lista_de_parametros[i]))\n\n        # Atualizar jogadores para os colocar em jogo.\n        jogador1.em_jogo = True\n        jogador2.em_jogo = True\n\n        # Atualizar pecas especiais dos jogadores\n        jogador1.pecas_especiais = parametros['tamanho_peca']\n        jogador2.pecas_especiais = parametros['tamanho_peca']\n\n        # Atualizar as definicoes do jogo.\n        self.model.definicoes.nomes_dos_jogadores = [parametros['nome_1'], parametros['nome_2']]\n        self.model.definicoes.tamanho_sequencia = parametros['tamanho_sequencia']\n        self.model.definicoes.altura = parametros['altura']\n        self.model.definicoes.comprimento = parametros['comprimento']\n        self.model.definicoes.pecas_especiais = parametros['tamanho_peca']\n        self.model.definicoes.vez = 0\n        self.model.definicoes.em_curso = True\n        self.model.definicoes.altura_maxima_ocupada = parametros['altura']\n        self.model.definicoes.comprimento_maximo_ocupado = 0\n\n        # Atualizar numero de espacos livres na matriz\n        self.model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']\n        # Atualizar numero de espacos ocupados na matriz\n        self.model.definicoes.espacos_ocupados = 0\n        # Atualizar Jogo.\n        self.model.jogo.grelha = utils.criar_matriz(parametros['altura'], parametros['comprimento'])\n\n        return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'\n\n    def registar_jogador(self, nome_do_jogador) -> str:\n        # Verificar se jogador existe.\n        if self.model.lista.obter(nome_do_jogador) is not None:\n            return 'Jogador existente.'\n        # Criar Jogador.\n        novo_jogador = Jogador()\n        # Alterar o nome do novo jogador para o nome pretendido.\n        novo_jogador.nome = nome_do_jogador\n        # Adicionar jogador à lista de jogadores.\n        self.model.lista.adicionar(novo_jogador)\n        return 'Jogador registado com sucesso.'\n\n    def validar_vitoria(self) -> bool:\n\n        jogo_atual = self.model.jogo.grelha\n        altura = self.model.definicoes.altura\n        comprimento = self.model.definicoes.comprimento\n        y_minimo = self.model.definicoes.altura_maxima_ocupada\n        x_maximo = self.model.definicoes.comprimento_maximo_ocupado + 1\n        tamanho_sequencia = self.model.definicoes.tamanho_sequencia\n        maximo_ciclos = altura * comprimento * 4\n\n        def horizontal() -> bool:\n\n            contador_de_ciclos = 0\n\n            peca_atual = 0\n            sequencia_atual = 0\n\n            y_inicial = altura - 1\n            y_final = -1\n            y_passo = -1\n\n            x_inicial = 0\n            x_final = comprimento\n            x_passo = 1\n\n            if self.model.definicoes.espacos_ocupados < self.model.definicoes.tamanho_sequencia:\n                return False\n\n            if x_maximo < tamanho_sequencia:\n                return False\n\n            y: int\n            for y in range(y_inicial, y_final, y_passo):\n\n                if y < y_minimo:\n                    continue\n\n                x: int\n                for x in range(x_inicial, x_final, x_passo):\n                    if x >= x_maximo:\n                        continue\n\n                    if sequencia_atual == tamanho_sequencia:\n                        utils.limpar_ecran()\n                        return True\n\n                    sequencia_atual = 1 if jogo_atual[y][x] == 0 else sequencia_atual\n                    sequencia_atual = 1 if peca_atual != jogo_atual[y][x] else sequencia_atual + 1\n                    peca_atual = jogo_atual[y][x] if peca_atual != jogo_atual[y][x] else peca_atual\n\n                    contador_de_ciclos += 1\n                    time.sleep(FPS)\n                    utils.limpar_ecran()\n                    print(\n                        f'A verificar vitória na horizontal ({round((contador_de_ciclos / maximo_ciclos) * 100)}%)')\n            utils.limpar_ecran()\n            return False\n\n        def vertical() -> bool:\n\n            contador_de_ciclos = 0\n\n            peca_atual = 0\n            sequencia_atual = 0\n\n            y_inicial = altura - 1\n            y_final = -1\n            y_passo = -1\n\n            x_inicial = 0\n            x_final = comprimento\n            x_passo = 1\n\n            if y_minimo > altura - tamanho_sequencia:\n                return False\n\n            x: int\n            for x in range(x_inicial, x_final, x_passo):\n                if x >= x_maximo:\n                    continue\n\n                y: int\n                for y in range(y_inicial, y_final, y_passo):\n                    if y < y_minimo:\n                        continue\n\n                    if sequencia_atual >= tamanho_sequencia:\n                        utils.limpar_ecran()\n                        return True\n\n                    sequencia_atual = 0 if jogo_atual[y][x] == 0 else sequencia_atual\n                    sequencia_atual = 1 if peca_atual != jogo_atual[y][x] else sequencia_atual + 1\n                    peca_atual = jogo_atual[y][x] if peca_atual != jogo_atual[y][x] else peca_atual\n\n                    contador_de_ciclos += 1\n\n                    time.sleep(FPS)\n                    utils.limpar_ecran()\n                    print(\n                        f'A verificar vitória na vertical ({round((contador_de_ciclos / maximo_ciclos) * 100) + 25}%)')\n\n            utils.limpar_ecran()\n            return False\n\n        def diagonal_esquerda_direita() -> bool:\n\n            contador_de_ciclos = 0\n\n            processados = []\n            peca_atual = 0\n            sequencia_atual = 0\n\n            y_inicial = altura - 1\n            y_final = tamanho_sequencia - 2\n            y_passo = -1\n\n            x_inicial = 0\n            x_final = comprimento - tamanho_sequencia + 1\n            x_passo = 1\n\n            incremento_inicial = 0\n            incremento_final = altura\n            incremento_passo = 1\n\n            if y_minimo > altura - tamanho_sequencia:\n                return False\n\n            if x_maximo < tamanho_sequencia:\n                return False\n\n            y: int\n            for y in range(y_inicial, y_final, y_passo):\n                x: int\n                for x in range(x_inicial, x_final, x_passo):\n                    incremento: int\n                    for incremento in range(incremento_inicial, incremento_final, incremento_passo):\n                        if sequencia_atual == tamanho_sequencia:\n                            utils.limpar_ecran()\n                            return True\n\n                        # Restrições do dominio da função f(x,y,z)\n                        if x + incremento >= comprimento:\n                            continue\n                        if y - incremento < 0:\n                            continue\n                        if y - incremento < y_minimo:\n                            continue\n                        if x + incremento >= x_maximo:\n                            continue\n\n                        # Se o valor já tiver sido processado não será processado novamente, isto é para evitar repetições.\n                        if (y - incremento, x + incremento) in processados:\n                            continue\n                        else:\n                            # Adicionar valor aos processados\n                            processados.append((y - incremento, x + incremento))\n\n                        if peca_atual == 0:\n                            sequencia_atual = 0\n                        if peca_atual == jogo_atual[y - incremento][x + incremento]:\n                            sequencia_atual += 1\n                        else:\n                            sequencia_atual = 1\n\n                        peca_atual = jogo_atual[y - incremento][x + incremento]\n\n                        contador_de_ciclos += 1\n\n                        time.sleep(FPS)\n                        utils.limpar_ecran()\n                        print(\n                            f'A verificar vitória na diagonal ({round((contador_de_ciclos / maximo_ciclos) * 100) + 50}%)')\n\n            utils.limpar_ecran()\n            return False\n\n        def diagonal_direita_esquerda() -> bool:\n\n            contador_de_ciclos = 0\n\n            processados = []\n            peca_atual = 0\n            sequencia_atual = 0\n\n            y_inicial = altura - 1\n            y_final = tamanho_sequencia - 2\n            y_passo = -1\n\n            x_inicial = comprimento - 1\n            x_final = tamanho_sequencia - 2\n            x_passo = - 1\n\n            incremento_inicial = 0\n            incremento_final = altura\n            incremento_passo = 1\n\n            if y_minimo > altura - tamanho_sequencia:\n                return False\n\n            if x_maximo < tamanho_sequencia:\n                return False\n\n            y: int\n            for y in range(y_inicial, y_final, y_passo):\n                x: int\n                for x in range(x_inicial, x_final, x_passo):\n                    incremento: int\n                    for incremento in range(incremento_inicial, incremento_final, incremento_passo):\n                        if sequencia_atual == tamanho_sequencia:\n                            utils.limpar_ecran()\n                            return True\n\n                        # Restrições do dominio da função f(x,y,z)\n                        if x - incremento < 0:\n                            continue\n                        if y - incremento < 0:\n                            continue\n                        if x - incremento >= x_maximo:\n                            continue\n                        if y - incremento < y_minimo:\n                            continue\n\n                        # Se o valor já tiver sido processado não será processado novamente, isto é para evitar repetições.\n                        if (y - incremento, x - incremento) in processados:\n                            continue\n                        else:\n                            # Adicionar valor aos processados\n                            processados.append((y - incremento, x - incremento))\n\n                        if peca_atual == 0:\n                            sequencia_atual = 0\n                        if peca_atual == jogo_atual[y - incremento][x - incremento]:\n                            sequencia_atual += 1\n                        else:\n                            sequencia_atual = 1\n\n                        peca_atual = jogo_atual[y - incremento][x - incremento]\n\n                        contador_de_ciclos += 1\n\n                        time.sleep(FPS)\n                        utils.limpar_ecran()\n                        print(\n                            f'A verificar vitória na diagonal ({round((contador_de_ciclos / maximo_ciclos) * 100) + 75}%)')\n            utils.limpar_ecran()\n            return False\n\n        return horizontal() or vertical() or diagonal_esquerda_direita() or diagonal_direita_esquerda()\n\n    def validar_empate(self) -> bool:\n        return self.model.definicoes.espacos_livres_total == 0\n\n    def visualizar_jogo(self) -> str:\n        if not self.model.definicoes.em_curso:\n            return 'Não existe jogo em curso.'\n\n    def mostrar_lista_de_jogadores(self) -> PrettyTable | str:\n        if len(self.model.lista.dados) == 0:\n            return 'Não existem jogadores registados.'\n\n        lista: list[dict] = sorted([jogador.__dict__ for jogador in self.model.lista.dados], key=lambda j: j['nome'])\n        cabecalho: list[str] = [k.replace('_', ' ').title() for k in lista[0].keys()]\n        try:\n            cabecalho.remove('pecas_especiais'.replace('_', ' ').title())\n            cabecalho.remove('em_jogo'.replace('_', ' ').title())\n            cabecalho.remove('eliminado'.replace('_', ' ').title())\n        except ValueError:\n            None\n        linhas = []\n\n        jogador: Jogador\n        for index in range(len(lista)):\n            linhas.append([])\n            for key in cabecalho:\n                linhas[index].append(lista[index][key.replace(' ', '_').lower()])\n\n        tab = PrettyTable(cabecalho)\n        tab.add_rows(linhas)\n        return tab\n\n    def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:\n        if not self.model.definicoes.em_curso:\n            return 'Não existe jogo em curso.'\n\n        cabecalho: list[str] = ['Chave', 'Valor']\n        tab = PrettyTable(cabecalho)\n\n        definicoes_dict: dict = OrderedDict(sorted(self.model.definicoes.__dict__.items()))\n\n        jogadores_em_jogo = self.model.lista.obter_jogadores_em_jogo()\n\n        key: str\n        for key in definicoes_dict.keys():\n            tab.add_row([key.replace('_', ' ').title(), definicoes_dict[key]])\n\n        jogador: Jogador\n        for jogador in jogadores_em_jogo:\n            tab.add_row([f'Pecas especiais do Jogador {jogador.nome}', jogador.pecas_especiais])\n\n        return tab\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/classes/Controller.py b/src/classes/Controller.py
+--- a/src/classes/Controller.py	(revision d05f5e2a1fd118539032db7a15d156f4f6241416)
++++ b/src/classes/Controller.py	(date 1672953456239)
+@@ -12,61 +12,61 @@
+ 
+ 
+ class Controller:
+-    def __init__(self, model: Model):
+-        self.model = model
+ 
+-    def reset(self) -> None:
+-        self.model.definicoes.reset()
+-        self.model.jogo.reset()
++    @staticmethod
++    def reset(model: Model) -> None:
++        model.definicoes.reset()
++        model.jogo.reset()
+ 
+         jogador: Jogador
+-        for jogador in self.model.lista.obter_jogadores_em_jogo():
++        for jogador in model.lista.obter_jogadores_em_jogo():
+             jogador.em_jogo = False
+ 
+-    def colocar_peca_na_grelha_do_jogo(self, coluna: int, valor: int, grelha: list[list[int]]) -> bool:
++    @staticmethod
++    def colocar_peca_na_grelha_do_jogo(model: Model, coluna: int, valor: int, grelha: list[list[int]]) -> bool:
+         y: int
+-        for y in range(self.model.definicoes.altura - 1, -1, -1):
++        for y in range(model.definicoes.altura - 1, -1, -1):
+             if grelha[y][coluna] == 0:
+                 grelha[y][coluna] = valor
+                 # Caso estejamos a usar esta função apenas para validar se existe espaço.
+                 if valor == 0:
+                     return True
+ 
+-                if y < self.model.definicoes.altura_maxima_ocupada:
+-                    self.model.definicoes.altura_maxima_ocupada = y
+-                if coluna > self.model.definicoes.comprimento_maximo_ocupado:
+-                    self.model.definicoes.comprimento_maximo_ocupado = coluna
++                if y < model.definicoes.altura_maxima_ocupada:
++                    model.definicoes.altura_maxima_ocupada = y
++                if coluna > model.definicoes.comprimento_maximo_ocupado:
++                    model.definicoes.comprimento_maximo_ocupado = coluna
+ 
+-                self.model.jogo.grelha[y][coluna] = grelha[y][coluna]
++                model.jogo.grelha[y][coluna] = grelha[y][coluna]
+                 return True
+         return False
+ 
+-    def colocar_peca(self, parametros: list[any]) -> str:
++    def colocar_peca(self, model: Model, parametros: list[any]) -> str:
+ 
+         # Validar se os parametros tem o comprimento minimo
+         if not len(parametros) >= 3:
+             return ''
+ 
+         # Validar existe algum jogo em curso:
+-        if not self.model.definicoes.em_curso:
++        if not model.definicoes.em_curso:
+             return 'Não existe jogo em curso.'
+ 
+-        jogador: Jogador = self.model.lista.obter(parametros[0])
++        jogador: Jogador = model.lista.obter(parametros[0])
+ 
+         # Validar se o nome do jogador é valido e se o jogador existe:
+         if jogador is None:
+             return 'Jogador não registado.'
+ 
+         # validar se é a vez do jogador
+-        nomes_dos_jogadores: list[Jogador] = self.model.lista.obter_jogadores_em_jogo()
++        nomes_dos_jogadores: list[Jogador] = model.lista.obter_jogadores_em_jogo()
+ 
+         vez_atual: int = 1 if jogador.nome == nomes_dos_jogadores[0].nome else 2
+ 
+-        if self.model.definicoes.vez == 0:
+-            self.model.definicoes.vez = vez_atual
++        if model.definicoes.vez == 0:
++            model.definicoes.vez = vez_atual
+ 
+         # Validar se é a vez do jogador em questão.
+-        if not vez_atual == self.model.definicoes.vez:
++        if not vez_atual == model.definicoes.vez:
+             return 'Não é a vez do jogador.'
+ 
+         # Validar se o jogador joga:
+@@ -86,7 +86,7 @@
+         coluna = int(parametros[2]) - 1
+ 
+         # Validar se a posição está nos limites
+-        if not coluna >= 0 and coluna <= self.model.definicoes.comprimento:
++        if not coluna >= 0 and coluna <= model.definicoes.comprimento:
+             return 'Posição irregular.'
+ 
+         # Caso exista sentido significa que se trata de uma peça especial
+@@ -104,10 +104,10 @@
+             for x in range(coluna,
+                            coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                            1 if sentido == 'D' else -1):
+-                if x < 0 or x > self.model.definicoes.comprimento - 1:
++                if x < 0 or x > model.definicoes.comprimento - 1:
+                     return 'Posição irregular.'
+ 
+-                if not self.colocar_peca_na_grelha_do_jogo(x, 0, self.model.jogo.grelha):
++                if not self.colocar_peca_na_grelha_do_jogo(model, x, 0, model.jogo.grelha):
+                     return 'Posição irregular.'
+ 
+             # Caso seja possivel introduzimos os valores nas colunas:
+@@ -115,9 +115,9 @@
+             for x in range(coluna,
+                            coluna + tamanho_peca_que_vai_ser_colocada if sentido == 'D' else coluna - tamanho_peca_que_vai_ser_colocada,
+                            1 if sentido == 'D' else -1):
+-                self.colocar_peca_na_grelha_do_jogo(x, vez_atual, self.model.jogo.grelha)
++                self.colocar_peca_na_grelha_do_jogo(model, x, vez_atual, model.jogo.grelha)
+             # Trocar a vez do jogador.
+-            self.model.definicoes.vez = (1 if vez_atual == 2 else 2)
++            model.definicoes.vez = (1 if vez_atual == 2 else 2)
+ 
+             # Remover peça especial ao jogador.
+             removido: bool = False
+@@ -132,22 +132,25 @@
+             jogador.pecas_especiais = nova_lista_de_pecas
+ 
+             # Aumentar numero de espacos ocupados
+-            self.model.definicoes.espacos_ocupados += tamanho_peca_que_vai_ser_colocada
++            model.definicoes.espacos_ocupados += tamanho_peca_que_vai_ser_colocada
+ 
+-            if self.validar_vitoria():
+-                self.reset()
++            if self.validar_vitoria(model):
++                self.reset(model)
+                 return "Sequência conseguida. Jogo terminado."
+             return 'Peça colocada.'
+ 
++        vez_atual = model.definicoes.vez
++        vez_atual = 2 if vez_atual == 1 else 2
++
+         if tamanho_peca_que_vai_ser_colocada == 1:
+             # Colocar a peca na matriz
+-            if self.colocar_peca_na_grelha_do_jogo(coluna, vez_atual, self.model.jogo.grelha):
++            if self.colocar_peca_na_grelha_do_jogo(model, coluna, vez_atual, model.jogo.grelha):
+                 # Trocar a vez do jogador.
+-                self.model.definicoes.vez = (1 if vez_atual == 2 else 2)
++                model.definicoes.vez = (1 if vez_atual == 2 else 2)
+                 # Aumentar numero de espacos ocupados
+-                self.model.definicoes.espacos_ocupados += 1
+-                if self.validar_vitoria():
+-                    self.reset()
++                model.definicoes.espacos_ocupados += 1
++                if self.validar_vitoria(model):
++                    self.reset(model)
+                     return "Sequência conseguida. Jogo terminado."
+                 return 'Peça colocada.'
+             else:
+@@ -155,24 +158,25 @@
+ 
+         return 'Tamanho da peça inválido.'
+ 
+-    def desistir_do_jogo(self, nomes_dos_jogadores: list[str]) -> str:
++    @staticmethod
++    def desistir_do_jogo(model: Model, nomes_dos_jogadores: list[str]) -> str:
+ 
+         nome: str
+         for nome in nomes_dos_jogadores:
+-            jogador_analisado: Jogador = self.model.lista.obter(nome)
++            jogador_analisado: Jogador = model.lista.obter(nome)
+             if jogador_analisado is None:
+                 return 'Jogador não registado.'
+-            if not self.model.definicoes.em_curso:
++            if not model.definicoes.em_curso:
+                 return 'Não existe jogo em curso.'
+             if not jogador_analisado.em_jogo:
+                 return 'Jogador não participa no jogo em curso'
+ 
+         # Obter nomes dos jogadores em jogo.
+-        nomes_dos_jogadores_em_jogo: list[str] = self.model.definicoes.nomes_dos_jogadores
++        nomes_dos_jogadores_em_jogo: list[str] = model.definicoes.nomes_dos_jogadores
+ 
+         # Obter dicionarios jogadores através do nome
+-        jogador1: Jogador = self.model.lista.obter(nomes_dos_jogadores_em_jogo[0])
+-        jogador2: Jogador = self.model.lista.obter(nomes_dos_jogadores_em_jogo[1])
++        jogador1: Jogador = model.lista.obter(nomes_dos_jogadores_em_jogo[0])
++        jogador2: Jogador = model.lista.obter(nomes_dos_jogadores_em_jogo[1])
+ 
+         # Lista que armazena o número de desistencias:
+         # [0] = jogador1
+@@ -182,7 +186,7 @@
+         # Contar numero de desistencias para saber ser ambos desistiram
+         i: int
+         for i in range(len(nomes_dos_jogadores)):
+-            jogador: Jogador = self.model.lista.obter(nomes_dos_jogadores[i])
++            jogador: Jogador = model.lista.obter(nomes_dos_jogadores[i])
+ 
+             if jogador.nome == jogador1.nome and jogador1.em_jogo:
+                 numero_de_desistencias[0] = True
+@@ -209,21 +213,23 @@
+         jogador2.em_jogo = False
+ 
+         # Finalizar jogo
+-        self.model.definicoes.reset()
++        model.definicoes.reset()
+         return 'Desistência com sucesso. Jogo terminado.'
+ 
+-    def eliminar_jogador(self, nome_do_jogador: str) -> str:
++    @staticmethod
++    def eliminar_jogador(model: Model, nome_do_jogador: str) -> str:
+         jogador: Jogador
+-        for jogador in self.model.lista.dados:
++        for jogador in model.lista.dados:
+             if jogador.nome == nome_do_jogador:
+                 if jogador.em_jogo:
+                     return 'Jogador participa no jogo em curso.'
+                 else:
+-                    self.model.lista.remover(jogador.nome)
++                    model.lista.remover(jogador.nome)
+                     return 'Jogador removido com sucesso.'
+         return 'Jogador não existente.'
+ 
+-    def iniciar_jogo(self, lista_de_parametros: list[str]) -> str:
++    @staticmethod
++    def iniciar_jogo(model: Model, lista_de_parametros: list[str]) -> str:
+         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
+         if len(lista_de_parametros) < 5:
+             return ''
+@@ -238,7 +244,7 @@
+         }
+ 
+         # Validar se existe um jogo em curso
+-        if self.model.definicoes.em_curso:
++        if model.definicoes.em_curso:
+             return 'Existe um jogo em curso.'
+ 
+         if parametros['nome_1'] == parametros['nome_2']:
+@@ -249,14 +255,14 @@
+ 
+         # Para cada nome vamos validar se o jogador existe e pode jogar
+         for nome in nomes_dos_jogadores:
+-            if not self.model.lista.obter(nome):
++            if not model.lista.obter(nome):
+                 return 'Jogador não registado.'
+-            if self.model.lista.obter(nome).em_jogo:
++            if model.lista.obter(nome).em_jogo:
+                 return 'Jogador não registado.'
+ 
+         # Obter jogadores pelo nome
+-        jogador1: Jogador = self.model.lista.obter(parametros['nome_1'])
+-        jogador2: Jogador = self.model.lista.obter(parametros['nome_2'])
++        jogador1: Jogador = model.lista.obter(parametros['nome_1'])
++        jogador2: Jogador = model.lista.obter(parametros['nome_2'])
+ 
+         # Validar se o comprimento e altura são inteiros
+         if not utils.verificar_se_e_possivel_converter_para_inteiro(parametros['comprimento']):
+@@ -304,6 +310,10 @@
+                 # Validar se são numeros inteiros
+                 if not utils.verificar_se_e_possivel_converter_para_inteiro(lista_de_parametros[i]):
+                     return 'Dimensões de peças especiais invalidas.'
++                if int(lista_de_parametros[i]) > parametros['tamanho_sequencia'] or int(
++                        lista_de_parametros[i]) <= 0:
++                    return 'Dimensões de peças especiais invalidas.'
++
+                 # se TODOS os números forem inteiros então TODOS são adicionados às peças especiais.
+                 parametros['tamanho_peca'].append(int(lista_de_parametros[i]))
+ 
+@@ -316,45 +326,47 @@
+         jogador2.pecas_especiais = parametros['tamanho_peca']
+ 
+         # Atualizar as definicoes do jogo.
+-        self.model.definicoes.nomes_dos_jogadores = [parametros['nome_1'], parametros['nome_2']]
+-        self.model.definicoes.tamanho_sequencia = parametros['tamanho_sequencia']
+-        self.model.definicoes.altura = parametros['altura']
+-        self.model.definicoes.comprimento = parametros['comprimento']
+-        self.model.definicoes.pecas_especiais = parametros['tamanho_peca']
+-        self.model.definicoes.vez = 0
+-        self.model.definicoes.em_curso = True
+-        self.model.definicoes.altura_maxima_ocupada = parametros['altura']
+-        self.model.definicoes.comprimento_maximo_ocupado = 0
++        model.definicoes.nomes_dos_jogadores = [parametros['nome_1'], parametros['nome_2']]
++        model.definicoes.tamanho_sequencia = parametros['tamanho_sequencia']
++        model.definicoes.altura = parametros['altura']
++        model.definicoes.comprimento = parametros['comprimento']
++        model.definicoes.pecas_especiais = parametros['tamanho_peca']
++        model.definicoes.vez = 0
++        model.definicoes.em_curso = True
++        model.definicoes.altura_maxima_ocupada = parametros['altura']
++        model.definicoes.comprimento_maximo_ocupado = 0
+ 
+         # Atualizar numero de espacos livres na matriz
+-        self.model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']
++        model.definicoes.espacos_livres_total = parametros['altura'] * parametros['comprimento']
+         # Atualizar numero de espacos ocupados na matriz
+-        self.model.definicoes.espacos_ocupados = 0
++        model.definicoes.espacos_ocupados = 0
+         # Atualizar Jogo.
+-        self.model.jogo.grelha = utils.criar_matriz(parametros['altura'], parametros['comprimento'])
++        model.jogo.grelha = utils.criar_matriz(parametros['altura'], parametros['comprimento'])
+ 
+         return f'Jogo iniciado entre {jogador1.nome} e {jogador2.nome}.'
+ 
+-    def registar_jogador(self, nome_do_jogador) -> str:
++    @staticmethod
++    def registar_jogador(model: Model, nome_do_jogador: str) -> str:
+         # Verificar se jogador existe.
+-        if self.model.lista.obter(nome_do_jogador) is not None:
++        if model.lista.obter(nome_do_jogador) is not None:
+             return 'Jogador existente.'
+         # Criar Jogador.
+         novo_jogador = Jogador()
+         # Alterar o nome do novo jogador para o nome pretendido.
+         novo_jogador.nome = nome_do_jogador
+         # Adicionar jogador à lista de jogadores.
+-        self.model.lista.adicionar(novo_jogador)
++        model.lista.adicionar(novo_jogador)
+         return 'Jogador registado com sucesso.'
+ 
+-    def validar_vitoria(self) -> bool:
++    @staticmethod
++    def validar_vitoria(model: Model) -> bool:
+ 
+-        jogo_atual = self.model.jogo.grelha
+-        altura = self.model.definicoes.altura
+-        comprimento = self.model.definicoes.comprimento
+-        y_minimo = self.model.definicoes.altura_maxima_ocupada
+-        x_maximo = self.model.definicoes.comprimento_maximo_ocupado + 1
+-        tamanho_sequencia = self.model.definicoes.tamanho_sequencia
++        jogo_atual = model.jogo.grelha
++        altura = model.definicoes.altura
++        comprimento = model.definicoes.comprimento
++        y_minimo = model.definicoes.altura_maxima_ocupada
++        x_maximo = model.definicoes.comprimento_maximo_ocupado + 1
++        tamanho_sequencia = model.definicoes.tamanho_sequencia
+         maximo_ciclos = altura * comprimento * 4
+ 
+         def horizontal() -> bool:
+@@ -372,7 +384,7 @@
+             x_final = comprimento
+             x_passo = 1
+ 
+-            if self.model.definicoes.espacos_ocupados < self.model.definicoes.tamanho_sequencia:
++            if model.definicoes.espacos_ocupados < model.definicoes.tamanho_sequencia:
+                 return False
+ 
+             if x_maximo < tamanho_sequencia:
+@@ -596,26 +608,30 @@
+ 
+         return horizontal() or vertical() or diagonal_esquerda_direita() or diagonal_direita_esquerda()
+ 
+-    def validar_empate(self) -> bool:
+-        return self.model.definicoes.espacos_livres_total == 0
++    @staticmethod
++    def validar_empate(model: Model, ) -> bool:
++        return model.definicoes.espacos_livres_total == 0
+ 
+-    def visualizar_jogo(self) -> str:
+-        if not self.model.definicoes.em_curso:
++    @staticmethod
++    def visualizar_jogo(model: Model, ) -> str:
++        if not model.definicoes.em_curso:
+             return 'Não existe jogo em curso.'
+ 
+-    def mostrar_lista_de_jogadores(self) -> PrettyTable | str:
+-        if len(self.model.lista.dados) == 0:
++    @staticmethod
++    def mostrar_lista_de_jogadores(model: Model, ) -> PrettyTable | str:
++        if len(model.lista.dados) == 0:
+             return 'Não existem jogadores registados.'
+ 
+-        lista: list[dict] = sorted([jogador.__dict__ for jogador in self.model.lista.dados], key=lambda j: j['nome'])
++        lista: list[dict] = sorted([jogador.__dict__ for jogador in model.lista.dados], key=lambda j: j['nome'])
+         cabecalho: list[str] = [k.replace('_', ' ').title() for k in lista[0].keys()]
++        linhas: list[list[str]] = []
++
+         try:
+             cabecalho.remove('pecas_especiais'.replace('_', ' ').title())
+             cabecalho.remove('em_jogo'.replace('_', ' ').title())
+             cabecalho.remove('eliminado'.replace('_', ' ').title())
+         except ValueError:
+-            None
+-        linhas = []
++            pass
+ 
+         jogador: Jogador
+         for index in range(len(lista)):
+@@ -627,16 +643,17 @@
+         tab.add_rows(linhas)
+         return tab
+ 
+-    def mostrar_detalhes_do_jogo(self) -> PrettyTable | str:
+-        if not self.model.definicoes.em_curso:
++    @staticmethod
++    def mostrar_detalhes_do_jogo(model: Model, ) -> PrettyTable | str:
++        if not model.definicoes.em_curso:
+             return 'Não existe jogo em curso.'
+ 
+         cabecalho: list[str] = ['Chave', 'Valor']
+         tab = PrettyTable(cabecalho)
+ 
+-        definicoes_dict: dict = OrderedDict(sorted(self.model.definicoes.__dict__.items()))
++        definicoes_dict: dict = OrderedDict(sorted(model.definicoes.__dict__.items()))
+ 
+-        jogadores_em_jogo = self.model.lista.obter_jogadores_em_jogo()
++        jogadores_em_jogo = model.lista.obter_jogadores_em_jogo()
+ 
+         key: str
+         for key in definicoes_dict.keys():
+@@ -647,3 +664,10 @@
+             tab.add_row([f'Pecas especiais do Jogador {jogador.nome}', jogador.pecas_especiais])
+ 
+         return tab
++
++
++linhas = [[], [], []]
++# linhas = [[],[],[]]
++
++linhas.append([])
++# linhas = [[],[],[],[]]
+Index: src/tests/registar_jogador.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/tests/registar_jogador.py b/src/tests/registar_jogador.py
+new file mode 100644
+--- /dev/null	(date 1673049317179)
++++ b/src/tests/registar_jogador.py	(date 1673049317179)
+@@ -0,0 +1,32 @@
++import unittest
++
++from classes import Controller
++from classes import Model
++
++namespace = '[Registar Jogador]'
++
++
++class TestesRegistarJogador(unittest.TestCase):
++
++    def start(self):
++        self.correto()
++        self.duplicado()
++
++    def correto(self):
++        controller = Controller.Controller()
++        model = Model.Model()
++        resposta: str = controller.registar_jogador(model, 'jonh_doe')
++        self.assertEqual(resposta, 'Jogador registado com sucesso.')
++        self.assertIs(1, len(model.lista.dados))
++        
++    def duplicado(self):
++        controller = Controller.Controller()
++        model = Model.Model()
++
++        resposta: str = controller.registar_jogador(model, 'jonh_doe')
++        self.assertEqual(resposta, 'Jogador registado com sucesso.')
++        self.assertIs(1, len(model.lista.dados))
++
++        resposta: str = controller.registar_jogador(model, 'jonh_doe')
++        self.assertEqual(resposta, 'Jogador existente.')
++        self.assertIs(1, len(model.lista.dados))
+Index: src/test.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test.py b/src/test.py
+new file mode 100644
+--- /dev/null	(date 1672947128084)
++++ b/src/test.py	(date 1672947128084)
+@@ -0,0 +1,10 @@
++from tests.eliminar_jogador import TestesEliminarJogador
++from tests.iniciar_jogo import TestesIniciarJogo
++from tests.registar_jogador import TestesRegistarJogador
++from tools.utilitarios import limpar_ecran
++
++limpar_ecran()
++
++TestesRegistarJogador().start()
++TestesEliminarJogador().start()
++TestesIniciarJogo().start()
+Index: src/dados.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\"jogadores\": [{\"nome\": \"a\", \"vitorias\": 382, \"derrotas\": 3, \"empates\": 0, \"em_jogo\": true, \"pecas_especiais\": [2, 3, 3, 2, 2, 3]}, {\"nome\": \"b\", \"vitorias\": 212, \"derrotas\": 173, \"empates\": 0, \"em_jogo\": true, \"pecas_especiais\": [3, 2, 3, 3, 2, 2, 3]}, {\"nome\": \"c\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"d\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"e\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"f\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"q\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"w\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"r\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"t\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"y\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"u\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"i\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"o\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"p\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"s\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"j\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"k\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"l\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"z\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"x\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"v\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"n\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"m\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"h\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}, {\"nome\": \"g\", \"vitorias\": 0, \"derrotas\": 0, \"empates\": 0, \"em_jogo\": false, \"pecas_especiais\": []}], \"jogo\": [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], \"definicoes\": {\"nomes_dos_jogadores\": [\"a\", \"b\"], \"tamanho_sequencia\": 4, \"altura\": 12, \"comprimento\": 16, \"pecas_especiais\": [3, 2, 3, 3, 2, 2, 3], \"espacos_livres_total\": 192, \"espacos_ocupados\": 3, \"altura_maxima_ocupada\": 11, \"comprimento_maximo_ocupado\": 5, \"em_curso\": true, \"vez\": 2}}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/dados.json b/src/dados.json
+--- a/src/dados.json	(revision d05f5e2a1fd118539032db7a15d156f4f6241416)
++++ b/src/dados.json	(date 1672778492340)
+@@ -1,1 +1,469 @@
+-{"jogadores": [{"nome": "a", "vitorias": 382, "derrotas": 3, "empates": 0, "em_jogo": true, "pecas_especiais": [2, 3, 3, 2, 2, 3]}, {"nome": "b", "vitorias": 212, "derrotas": 173, "empates": 0, "em_jogo": true, "pecas_especiais": [3, 2, 3, 3, 2, 2, 3]}, {"nome": "c", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "d", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "e", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "f", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "q", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "w", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "r", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "t", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "y", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "u", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "i", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "o", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "p", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "s", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "j", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "k", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "l", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "z", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "x", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "v", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "n", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "m", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "h", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}, {"nome": "g", "vitorias": 0, "derrotas": 0, "empates": 0, "em_jogo": false, "pecas_especiais": []}], "jogo": [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], "definicoes": {"nomes_dos_jogadores": ["a", "b"], "tamanho_sequencia": 4, "altura": 12, "comprimento": 16, "pecas_especiais": [3, 2, 3, 3, 2, 2, 3], "espacos_livres_total": 192, "espacos_ocupados": 3, "altura_maxima_ocupada": 11, "comprimento_maximo_ocupado": 5, "em_curso": true, "vez": 2}}
+\ No newline at end of file
++{
++  "jogadores": [
++    {
++      "nome": "a",
++      "vitorias": 382,
++      "derrotas": 3,
++      "empates": 0,
++      "em_jogo": true,
++      "pecas_especiais": [
++        2,
++        3,
++        3,
++        2,
++        2,
++        3
++      ]
++    },
++    {
++      "nome": "b",
++      "vitorias": 212,
++      "derrotas": 173,
++      "empates": 0,
++      "em_jogo": true,
++      "pecas_especiais": [
++        3,
++        2,
++        3,
++        3,
++        2,
++        2,
++        3
++      ]
++    },
++    {
++      "nome": "c",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "d",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "e",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "f",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "q",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "w",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "r",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "t",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "y",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "u",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "i",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "o",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "p",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "s",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "j",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "k",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "l",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "z",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "x",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "v",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "n",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "m",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "h",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    },
++    {
++      "nome": "g",
++      "vitorias": 0,
++      "derrotas": 0,
++      "empates": 0,
++      "em_jogo": false,
++      "pecas_especiais": []
++    }
++  ],
++  "jogo": [
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ],
++    [
++      0,
++      0,
++      0,
++      1,
++      1,
++      1,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0,
++      0
++    ]
++  ],
++  "definicoes": {
++    "nomes_dos_jogadores": [
++      "a",
++      "b"
++    ],
++    "tamanho_sequencia": 4,
++    "altura": 12,
++    "comprimento": 16,
++    "pecas_especiais": [
++      3,
++      2,
++      3,
++      3,
++      2,
++      2,
++      3
++    ],
++    "espacos_livres_total": 192,
++    "espacos_ocupados": 3,
++    "altura_maxima_ocupada": 11,
++    "comprimento_maximo_ocupado": 5,
++    "em_curso": true,
++    "vez": 2
++  }
++}
+\ No newline at end of file
+Index: src/tests/eliminar_jogador.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/tests/eliminar_jogador.py b/src/tests/eliminar_jogador.py
+new file mode 100644
+--- /dev/null	(date 1672947076698)
++++ b/src/tests/eliminar_jogador.py	(date 1672947076698)
+@@ -0,0 +1,46 @@
++import unittest
++
++from classes import Controller
++from classes import Model
++
++namespace = '[Eliminar Jogador]'
++
++
++class TestesEliminarJogador(unittest.TestCase):
++
++    def start(self):
++        self.correto()
++        self.jogador_nao_existente()
++        self.jogador_participa_no_jogo_em_curso()
++
++    def correto(self):
++        controller = Controller.Controller()
++        model = Model.Model()
++        controller.registar_jogador(model, 'jonh_doe')
++        self.assertIs(1, len(model.lista.dados))
++
++        resposta: str = controller.eliminar_jogador(model, 'jonh_doe')
++        self.assertEqual(resposta, 'Jogador removido com sucesso.')
++        self.assertIs(0, len(model.lista.dados))
++
++    def jogador_nao_existente(self):
++        controller = Controller.Controller()
++        model = Model.Model()
++        resposta: str = controller.eliminar_jogador(model, 'jonh_doe')
++        self.assertEqual(resposta, 'Jogador não existente.')
++
++    def jogador_participa_no_jogo_em_curso(self):
++        controller = Controller.Controller()
++        model = Model.Model()
++        controller.registar_jogador(model, 'jonh_doe')
++        self.assertIs(1, len(model.lista.dados))
++
++        jogador = model.lista.dados[0]
++
++        self.assertIsNot(None, jogador)
++        self.assertEqual('jonh_doe', jogador.nome)
++
++        jogador.em_jogo = True
++
++        resposta: str = controller.eliminar_jogador(model, 'jonh_doe')
++        self.assertEqual(resposta, 'Jogador participa no jogo em curso.')
+Index: src/tests/iniciar_jogo.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/tests/iniciar_jogo.py b/src/tests/iniciar_jogo.py
+new file mode 100644
+--- /dev/null	(date 1673049434660)
++++ b/src/tests/iniciar_jogo.py	(date 1673049434660)
+@@ -0,0 +1,161 @@
++import unittest
++
++from classes.Controller import Controller
++from classes.Jogador import Jogador
++from classes.Model import Model
++
++
++class TestesIniciarJogo(unittest.TestCase):
++
++    def start(self):
++        self.correto()
++        self.altura_incorreta()
++        self.comprimento_incorreto()
++        self.tamanho_sequencia_incorreto()
++        self.tamanho_peca_incorreto()
++        self.jogador_nao_existe()
++
++    def correto(self):
++        controller = Controller()
++        model = Model()
++
++        nome1 = 'a'
++        nome2 = 'b'
++        comprimento = 16
++        altura = 12
++        tamanho_sequencia = 4
++
++        controller.registar_jogador(model, nome1)
++        controller.registar_jogador(model, nome2)
++
++        jogadores: list[Jogador] = model.lista.dados
++
++        self.assertIsNot(0, len(jogadores))
++        self.assertEqual(nome1, jogadores[0].nome)
++        self.assertEqual(nome2, jogadores[1].nome)
++
++        parametros = [nome1, nome2, comprimento, altura, tamanho_sequencia, 3, 3, 3]
++
++        resposta = controller.iniciar_jogo(model, parametros)
++
++        self.assertEqual(resposta, 'Jogo iniciado entre a e b.')
++        self.assertEqual(altura, model.definicoes.altura)
++        self.assertEqual(comprimento, model.definicoes.comprimento)
++        self.assertEqual(tamanho_sequencia, model.definicoes.tamanho_sequencia)
++        self.assertIsNot([], model.definicoes.nomes_dos_jogadores)
++
++    def altura_incorreta(self):
++        controller = Controller()
++        model = Model()
++
++        nome1 = 'a'
++        nome2 = 'b'
++        comprimento = 16
++        altura = -1
++        tamanho_sequencia = 4
++
++        controller.registar_jogador(model, nome1)
++        controller.registar_jogador(model, nome2)
++
++        jogadores: list[Jogador] = model.lista.dados
++
++        self.assertIsNot(0, len(jogadores))
++        self.assertEqual(nome1, jogadores[0].nome)
++        self.assertEqual(nome2, jogadores[1].nome)
++
++        parametros = [nome1, nome2, comprimento, altura, tamanho_sequencia, 3, 3, 3]
++
++        resposta = controller.iniciar_jogo(model, parametros)
++
++        self.assertEqual(resposta, 'Dimensões de grelha invalidas.')
++
++    def comprimento_incorreto(self):
++        controller = Controller()
++        model = Model()
++
++        nome1 = 'a'
++        nome2 = 'b'
++        comprimento = 99
++        altura = 12
++        tamanho_sequencia = 4
++
++        controller.registar_jogador(model, nome1)
++        controller.registar_jogador(model, nome2)
++
++        jogadores: list[Jogador] = model.lista.dados
++
++        self.assertIsNot(0, len(jogadores))
++        self.assertEqual(nome1, jogadores[0].nome)
++        self.assertEqual(nome2, jogadores[1].nome)
++
++        parametros = [nome1, nome2, comprimento, altura, tamanho_sequencia, 3, 3, 3]
++
++        resposta = controller.iniciar_jogo(model, parametros)
++
++        self.assertEqual(resposta, 'Dimensões de grelha invalidas.')
++
++    def tamanho_sequencia_incorreto(self):
++        controller = Controller()
++        model = Model()
++
++        nome1 = 'a'
++        nome2 = 'b'
++        comprimento = 16
++        altura = 12
++        tamanho_sequencia = 99
++
++        controller.registar_jogador(model, nome1)
++        controller.registar_jogador(model, nome2)
++
++        jogadores: list[Jogador] = model.lista.dados
++
++        self.assertIsNot(0, len(jogadores))
++        self.assertEqual(nome1, jogadores[0].nome)
++        self.assertEqual(nome2, jogadores[1].nome)
++
++        parametros = [nome1, nome2, comprimento, altura, tamanho_sequencia, 3, 3, 3]
++
++        resposta = controller.iniciar_jogo(model, parametros)
++
++        self.assertEqual(resposta, 'Tamanho de sequência invalido.')
++
++    def tamanho_peca_incorreto(self):
++        controller = Controller()
++        model = Model()
++
++        nome1 = 'c'
++        nome2 = 'b'
++        comprimento = 16
++        altura = 12
++        tamanho_sequencia = 4
++
++        controller.registar_jogador(model, nome1)
++        controller.registar_jogador(model, nome2)
++
++        jogadores: list[Jogador] = model.lista.dados
++
++        self.assertIsNot(0, len(jogadores))
++        self.assertEqual(nome1, jogadores[0].nome)
++        self.assertEqual(nome2, jogadores[1].nome)
++
++        parametros = [nome1, nome2, comprimento, altura, tamanho_sequencia]
++
++        resposta = controller.iniciar_jogo(model, parametros)
++
++        self.assertEqual(resposta, 'Tamanho de sequência invalido.')
++
++    def jogador_nao_existe(self):
++        controller = Controller()
++        model = Model()
++
++        nome1 = 'a'
++        nome2 = 'b'
++        comprimento = 16
++        altura = 12
++        tamanho_sequencia = 4
++
++        parametros = [nome1, nome2, comprimento, altura, tamanho_sequencia, 3, 3, 3]
++
++        resposta = controller.iniciar_jogo(model, parametros)
++
++        self.assertEqual(resposta, 'Jogador não registado.')
+diff --git a/src/classes/__init__.py b/src/classes/__init__.py
+new file mode 100644
