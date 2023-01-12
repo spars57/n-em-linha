@@ -632,12 +632,13 @@ class Controller:
         # Esta funcionalidade foi feita pela Ive.
         if len(model.lista.dados) == 0:
             return 'Não existem jogadores registados.'
-        cabecalho = ["Nome", "Vitorias", "Derrotas", "Empates"]
+        cabecalho = ["Nome", "Vitorias", "Derrotas", "Empates", "Jogos Jogados"]
         linhas = []
         lista_atual = model.lista.dados
         for jogador in lista_atual:
+            total_jogos = jogador.vitorias + jogador.derrotas + jogador.empates
             linha = [jogador.nome, jogador.vitorias,
-                     jogador.derrotas, jogador.empates]
+                     jogador.derrotas, jogador.empates, total_jogos]
             linhas.append(linha)
         # PrettyTable é uma classe que cria tabelas
         tabela = PrettyTable(cabecalho)
