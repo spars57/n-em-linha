@@ -27,11 +27,11 @@ class Controller:
         linha = self.model.definicoes_do_jogo.obter_altura()
         if not jogo_atual:
             return 'Não existe jogo em curso.'
-        jogador: jogador = self.model.lista_de_jogadores.obter_por_nome(parametros[0])
+        jogador: Jogador = self.model.lista_de_jogadores.obter_por_nome(parametros[0])
         if jogador is None:
             return 'Jogador não registado.'
-        if not jogador.obter_jogadores_em_jogo():
-            return 'Jogador não participa em jogo em curso.'
+        #if not jogador.obter_jogadores_em_jogo():
+        #    return 'Jogador não participa em jogo em curso.'
         for tamanho in pecas_especiais:
             pass
 
@@ -46,8 +46,11 @@ class Controller:
                         vez_atual = self.model.definicoes_do_jogo.obter_vez
                         if vez_atual == 0:
                             vez_atual += 1
+                            return True
                         vez_atual = 1 if vez_atual == 2 else 2
-                        return True
+                        if self.validar_vitoria(jogo):
+                            return "Sequência conseguida. Jogo terminado."
+                        return 'Peça colocada.'  
                 return False
             return "Sem o sentido da peça"
         elif len(parametros) == 4:
