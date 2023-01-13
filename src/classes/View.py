@@ -6,7 +6,7 @@ from tools import utilitarios as utils
 class View:
     def __init__(self):
         self.controller = Controller()
-
+        
     def main(self):
         model = Model()
         utils.limpar_ecran()
