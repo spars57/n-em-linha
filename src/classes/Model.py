@@ -6,7 +6,6 @@ from classes.Definicoes import Definicoes
 from classes.Jogador import Jogador
 from classes.Jogo import Jogo
 from classes.ListaDeJogadores import ListaDeJogadores
-from tools import utilitarios as utils
 
 
 class Model:
@@ -19,8 +18,8 @@ class Model:
         if not os.path.exists(nome_ficheiro):
             return 'Ocorreu um erro na gravação.'
 
-        if not utils.verificar_se_e_json(nome_ficheiro):
-            return 'Ocorreu um erro na gravação.'
+        # if not utils.verificar_se_e_json(nome_ficheiro):
+        #    return 'Ocorreu um erro na gravação.'
 
         try:
             ficheiro: IO = open(nome_ficheiro, 'w')
@@ -48,8 +47,8 @@ class Model:
         if not os.path.exists(nome_ficheiro):
             return 'Ocorreu um erro no carregamento.'
 
-        if not utils.verificar_se_e_json(nome_ficheiro):
-            return 'Ocorreu um erro no carregamento.'
+        # if not utils.verificar_se_e_json(nome_ficheiro):
+        #    return 'Ocorreu um erro no carregamento.'
 
         try:
             ficheiro: IO = open(nome_ficheiro, 'r')
