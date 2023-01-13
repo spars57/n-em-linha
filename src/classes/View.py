@@ -30,6 +30,8 @@ class View:
                 case 'RJ':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
+                        utils.finalizar_instrucao()
                         continue
                     nome_do_jogador: str = separar[1].split()[0]
                     print(self.controller.registar_jogador(model, nome_do_jogador))
@@ -38,6 +40,8 @@ class View:
                 case 'EJ':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
+                        utils.finalizar_instrucao()
                         continue
                     nome_do_jogador: str = separar[1].split()[0]
                     print(self.controller.eliminar_jogador(model, nome_do_jogador))
@@ -46,6 +50,8 @@ class View:
                 case 'D':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
+                        utils.finalizar_instrucao()
                         continue
                     nomes_dos_jogadores: list[str] = separar[1].split()
                     print(self.controller.desistir_do_jogo(model, nomes_dos_jogadores))
@@ -61,6 +67,8 @@ class View:
                 case 'IJ':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
+                        utils.finalizar_instrucao()
                         continue
                     parametros: list[str] = separar[1].split()
                     print(self.controller.iniciar_jogo(model, parametros))
@@ -69,6 +77,7 @@ class View:
                 case 'CP':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
                         utils.finalizar_instrucao()
                         continue
                     parametros = separar[1].split()
@@ -78,6 +87,8 @@ class View:
                 case 'G':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
+                        utils.finalizar_instrucao()
                         continue
                     nome_do_ficheiro = separar[1].split()[0]
                     print(model.salvar(nome_do_ficheiro))
@@ -86,6 +97,8 @@ class View:
                 case 'L':
                     utils.inicializar_instrucao()
                     if len(separar) < 2:
+                        print('Instrução Invalida')
+                        utils.finalizar_instrucao()
                         continue
                     nome_do_ficheiro = separar[1].split()[0]
                     print(model.ler(nome_do_ficheiro))

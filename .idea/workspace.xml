@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40d0ca4b-87e4-422c-9149-72e52e0f88a1" name="Changes" comment="">
+    <list default="true" id="40d0ca4b-87e4-422c-9149-72e52e0f88a1" name="Changes" comment="Mostrar jogos jogados (commit da Ive)">
       <change afterPath="$PROJECT_DIR$/src/noptes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/classes/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/Controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dados.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/dados.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/classes/View.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/classes/View.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +127,14 @@
       <option name="presentableId" value="Default" />
       <updated>1673529246795</updated>
     </task>
+    <task id="LOCAL-00001" summary="Mostrar jogos jogados (commit da Ive)">
+      <created>1673557358939</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1673557358939</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -139,5 +147,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Mostrar jogos jogados (commit da Ive)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Mostrar jogos jogados (commit da Ive)" />
   </component>
 </project>

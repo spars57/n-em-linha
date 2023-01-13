@@ -46,7 +46,7 @@ class Controller:
 
         # Validar se os parametros tem o comprimento minimo
         if not len(parametros) >= 3:
-            return ''
+            return 'Instrução Invalida.'
 
         # Validar existe algum jogo em curso:
         if not model.definicoes.em_curso:
@@ -234,7 +234,7 @@ class Controller:
 
         # Verificar se foram passados no minimo 6 parametros se não for temos um erro
         if len(lista_de_parametros) < 5:
-            return ''
+            return 'Instrução Invalida.'
 
         parametros: dict = {
             "nome_1": lista_de_parametros[0],
@@ -377,6 +377,11 @@ class Controller:
         tamanho_sequencia = model.definicoes.tamanho_sequencia
         maximo_ciclos = altura * comprimento * 4
 
+        jogadores: list[Jogador] = model.lista.obter_jogadores_em_jogo()
+
+        jogador1: Jogador = jogadores[0]
+        jogador2: Jogador = jogadores[1]
+
         def horizontal() -> bool:
 
             contador_de_ciclos = 0
@@ -410,6 +415,13 @@ class Controller:
                         continue
 
                     if sequencia_atual == tamanho_sequencia:
+                        if peca_atual == 1:
+                            jogador1.vitorias += 1
+                            jogador2.derrotas += 1
+                        else:
+                            jogador2.vitorias += 1
+                            jogador1.derrotas += 1
+
                         utils.limpar_ecran()
                         return True
 
@@ -453,7 +465,14 @@ class Controller:
                     if y < y_minimo:
                         continue
 
-                    if sequencia_atual >= tamanho_sequencia:
+                    if sequencia_atual == tamanho_sequencia:
+                        if peca_atual == 1:
+                            jogador1.vitorias += 1
+                            jogador2.derrotas += 1
+                        else:
+                            jogador2.vitorias += 1
+                            jogador1.derrotas += 1
+
                         utils.limpar_ecran()
                         return True
 
@@ -504,6 +523,13 @@ class Controller:
                     incremento: int
                     for incremento in range(incremento_inicial, incremento_final, incremento_passo):
                         if sequencia_atual == tamanho_sequencia:
+                            if peca_atual == 1:
+                                jogador1.vitorias += 1
+                                jogador2.derrotas += 1
+                            else:
+                                jogador2.vitorias += 1
+                                jogador1.derrotas += 1
+
                             utils.limpar_ecran()
                             return True
 
@@ -577,6 +603,13 @@ class Controller:
                     incremento: int
                     for incremento in range(incremento_inicial, incremento_final, incremento_passo):
                         if sequencia_atual == tamanho_sequencia:
+                            if peca_atual == 1:
+                                jogador1.vitorias += 1
+                                jogador2.derrotas += 1
+                            else:
+                                jogador2.vitorias += 1
+                                jogador1.derrotas += 1
+
                             utils.limpar_ecran()
                             return True
 
@@ -616,7 +649,8 @@ class Controller:
             utils.limpar_ecran()
             return False
 
-        return horizontal() or vertical() or diagonal_esquerda_direita() or diagonal_direita_esquerda()
+        resultado = horizontal() or vertical() or diagonal_esquerda_direita() or diagonal_direita_esquerda()
+        return resultado
 
     @staticmethod
     def validar_empate(model: Model, ) -> bool:
